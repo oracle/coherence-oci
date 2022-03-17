@@ -1,0 +1,220 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (c) 2022, Oracle and/or its affiliates.
+  ~
+  ~ Licensed under the Universal Permissive License v 1.0 as shown at
+  ~ https://oss.oracle.com/licenses/upl.
+  -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="class://com.oracle.coherence.oci.config.OCINamespaceHandler"
+            xmlns:coh="http://xmlns.oracle.com/coherence/coherence-operational-config"
+            xmlns="class://com.oracle.coherence.oci.config.OCINamespaceHandler"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified"
+            version="1.0">
+
+  <xsd:annotation>
+    <xsd:documentation>
+      Copyright (c) 2022, Oracle and/or its affiliates.
+
+      Licensed under the Universal Permissive License v 1.0 as shown at
+      https://oss.oracle.com/licenses/upl.
+
+      This notice may not be removed or altered.
+    </xsd:documentation>
+  </xsd:annotation>
+
+  <xsd:import namespace="http://xmlns.oracle.com/coherence/coherence-operational-config"
+              schemaLocation="coherence-operational-config.xsd"/>
+
+  <xsd:element name="authentication">
+    <xsd:annotation>
+      <xsd:documentation>
+        The authentication details to use to connect to OCI.
+
+        The authentication details can be specified using a
+        configuration file and profile name, or by specifying
+        a class that implements, or class factory that produces,
+        an OCI API AbstractAuthenticationDetailsProvider.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element ref="oci-config-file"/>
+        <xsd:element ref="coh:instance"/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="oci-config-file">
+    <xsd:annotation>
+      <xsd:documentation>
+        The oci-config-file element defines the OCI configuration
+        file to use to connect to OCI services.
+
+        Used in: authentication
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:group ref="oci-config-file-group"/>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- ================ Common OCI XSD Elements ================= -->
+
+  <xsd:group name="oci-config-file-group">
+    <xsd:annotation>
+      <xsd:documentation>
+        The OCI configuration file details.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element ref="file-name" minOccurs="0"/>
+      <xsd:element ref="profile-name" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:element name="file-name" type="coh:coherence-string-type">
+    <xsd:annotation>
+      <xsd:documentation>
+        The location of the OCI configuration file.
+        The default location is ~/.oci/config
+
+        Used in: oci-config-file
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:element name="profile-name" type="coh:coherence-string-type">
+    <xsd:annotation>
+      <xsd:documentation>
+        The OCI profile name.
+        The default profile name is DEFAULT
+
+        Used in: oci-config-file
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <!-- ============== Secrets Service XSD Elements ============== -->
+
+  <xsd:element name="secrets-key-loader">
+    <xsd:annotation>
+      <xsd:documentation>
+        The secrets-key-loader element defines a PrivateKeyLoader that
+        loads named PrivateKey instances from the OCI Secret Service.
+
+        Used in: key-store-resolver
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:group ref="secrets-client-group"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="secrets-cert-loader">
+    <xsd:annotation>
+      <xsd:documentation>
+        The secrets-cert-loader element defines a CertificateLoader that
+        loads named Certificate instances from the OCI Secret Service.
+
+        Used in: key-store-resolver
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:group ref="secrets-client-group"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="secrets-ca-cert-loader">
+    <xsd:annotation>
+      <xsd:documentation>
+        The secrets-ca-cert-loader element defines a CA CertificateLoader
+        that loads named CA Certificate instances from the OCI Secret Service.
+
+        Used in: key-store-resolver
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:group ref="secrets-client-group"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="secrets-key-store-loader">
+    <xsd:annotation>
+      <xsd:documentation>
+        The secrets-key-store-loader element defines a KeyStoreLoader that
+        loads named PrivateKey instances from the OCI Secret Service.
+
+        Used in: key-store-resolver
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:group ref="secrets-client-group"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="secrets-password-provider">
+    <xsd:annotation>
+      <xsd:documentation>
+        The PasswordProvider that retrieves the credentials from
+        the OCI Secret Service.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="secret-id"/>
+        <xsd:group ref="secrets-client-group"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="secret-id" type="coh:coherence-string-type">
+    <xsd:annotation>
+      <xsd:documentation>
+        The identifier of a secret in the OCI Secret Service.
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:group name="secrets-client-group">
+    <xsd:annotation>
+      <xsd:documentation>
+        The secrets-client-group is a group of elements that
+        define an OCI Secrets Service client.
+
+        Used in: secrets-key-loader, secrets-cert-loader,
+        secrets-keystore-loader, secrets-password-provider
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice>
+      <xsd:element ref="authentication" minOccurs="0"/>
+      <xsd:element ref="secrets-client" minOccurs="0"/>
+    </xsd:choice>
+  </xsd:group>
+
+  <xsd:element name="secrets-client">
+    <xsd:annotation>
+      <xsd:documentation>
+        The secrets-client element defines a custom SecretsClient
+        implementation that will be used to connect to the OCI
+        Secrets Service.
+
+        Used in: secrets-password-provider
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="coh:instance"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

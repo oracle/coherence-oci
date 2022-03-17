@@ -1,0 +1,48 @@
+///////////////////////////////////////////////////////////////////////////////
+    Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+    Licensed under the Universal Permissive License v 1.0 as shown at
+    http://oss.oracle.com/licenses/upl.
+///////////////////////////////////////////////////////////////////////////////
+= OCI Secrets Service Integration
+
+// DO NOT remove this header - it might look like a duplicate of the header above, but
+// both they serve a purpose, and the docs will look wrong if it is removed.
+== OCI Secrets Service Integration
+
+This module provides integrations between Coherence and the OCI Secrets Service.
+To use the Coherence OCI Secrets module add the following dependency to your project.
+
+[source,xml,subs="attributes+"]
+.Maven pom.xml
+----
+<dependency>
+    <groupId>com.oracle.coherence.ce</groupId>
+    <artifactId>coherence</artifactId>
+    <version>${coherenceVersion}</version>
+</dependency>
+<dependency>
+    <groupId>com.oracle.coherence</groupId>
+    <artifactId>coherence-oci-secrets</artifactId>
+    <version>${coherenceOciVersion}</version>
+</dependency>
+----
+
+[source]
+.Gradle build.gradle
+----
+implementation "com.oracle.coherence.ce:coherence:${coherenceVersion}"
+implementation "com.oracle.coherence:coherence-oci-secrets:${coherenceOciVersion}"
+----
+
+Replacing `${coherenceVersion}` with the version of Coherence being used and
+replacing `${coherenceOciVersion}` with the version of the Coherence OCI module you are using.
+
+=== Configure Coherence TLS using OCI Secrets
+
+When configuring Coherence to use TLS for securing communication, this typically requires Java keystores on the local file system. Using the `coherence-oci-secrets` module, these keystores, or keys and certificates can be stored in the OCI Secrets Service instead of on the local file system. Coherence will then retrieve those secrets at runtime.
+
+Coherence allows custom SSLContext Providers to be configured as part of the SSL socket provider configuration in the Coherence operational configuration file.
+The Coherence OCI Secrets Service integration uses this feature as a way to provide a custom SSLContext provider that obtains keystores, keys and certificates from named secrets.
+
+

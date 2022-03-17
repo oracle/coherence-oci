@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2022, Oracle and/or its affiliates.
+  ~
+  ~ Licensed under the Universal Permissive License v 1.0 as shown at
+  ~ https://oss.oracle.com/licenses/upl.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.oracle.coherence</groupId>
+  <artifactId>coherence-oci-parent</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>coherence-oci</module>
+    <module>coherence-oci-secrets</module>
+  </modules>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+
+    <coherence.group.id>com.oracle.coherence</coherence.group.id>
+    <version.lib.bedrock>5.1.3</version.lib.bedrock>
+    <version.lib.coherence>14.1.2-0-0-SNAPSHOT</version.lib.coherence>
+    <version.lib.hamcrest>2.2</version.lib.hamcrest>
+    <version.lib.junit>5.8.2</version.lib.junit>
+    <version.lib.mockito>4.3.1</version.lib.mockito>
+    <version.lib.oci>2.12.0</version.lib.oci>
+    <version.lib.slf4j>1.7.32</version.lib.slf4j>
+
+    <version.plugin.maven.failsafe>3.0.0-M5</version.plugin.maven.failsafe>
+    <version.plugin.maven.jar>3.2.0</version.plugin.maven.jar>
+    <version.plugin.maven.surefire>3.0.0-M5</version.plugin.maven.surefire>
+  </properties>
+
+  <dependencyManagement>
+     <dependencies>
+       <dependency>
+         <groupId>${coherence.group.id}</groupId>
+         <artifactId>coherence-bom</artifactId>
+         <version>${version.lib.coherence}</version>
+         <type>pom</type>
+         <scope>import</scope>
+       </dependency>
+
+       <dependency>
+         <groupId>com.oracle.oci.sdk</groupId>
+         <artifactId>oci-java-sdk-bom</artifactId>
+         <version>${version.lib.oci}</version>
+         <type>pom</type>
+         <scope>import</scope>
+       </dependency>
+
+       <dependency>
+         <groupId>org.junit.jupiter</groupId>
+         <artifactId>junit-jupiter</artifactId>
+         <version>${version.lib.junit}</version>
+       </dependency>
+       <dependency>
+         <groupId>org.hamcrest</groupId>
+         <artifactId>hamcrest</artifactId>
+         <version>${version.lib.hamcrest}</version>
+       </dependency>
+       <dependency>
+         <groupId>org.mockito</groupId>
+         <artifactId>mockito-core</artifactId>
+         <version>${version.lib.mockito}</version>
+       </dependency>
+       <dependency>
+         <groupId>com.oracle.bedrock</groupId>
+         <artifactId>bedrock-runtime</artifactId>
+         <version>${version.lib.bedrock}</version>
+       </dependency>
+       <dependency>
+         <groupId>com.oracle.bedrock</groupId>
+         <artifactId>bedrock-testing-support</artifactId>
+         <version>${version.lib.bedrock}</version>
+       </dependency>
+
+       <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-simple</artifactId>
+         <version>${version.lib.slf4j}</version>
+       </dependency>
+     </dependencies>
+   </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${version.plugin.maven.jar}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${version.plugin.maven.surefire}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${version.plugin.maven.failsafe}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>

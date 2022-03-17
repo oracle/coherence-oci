@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (c) 2022, Oracle and/or its affiliates.
+  ~
+  ~ Licensed under the Universal Permissive License v 1.0 as shown at
+  ~ https://oss.oracle.com/licenses/upl.
+  -->
+<coherence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://xmlns.oracle.com/coherence/coherence-operational-config"
+           xmlns:oci="class://com.oracle.coherence.oci.config.OCINamespaceHandler"
+           xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-operational-config coherence-operational-config.xsd
+                                class://com.oracle.coherence.oci.config.OCINamespaceHandler coherence-oci.xsd">
+
+  <cluster-config>
+    <socket-providers>
+      <socket-provider id="test">
+        <ssl>
+          <trust-manager>
+            <key-store>
+              <ca-cert>test-ca.cert</ca-cert>
+              <key-store-resolver>
+                <cert-loader>
+                  <oci:secrets-cert-loader/>
+                </cert-loader>
+              </key-store-resolver>
+            </key-store>
+          </trust-manager>
+        </ssl>
+      </socket-provider>
+    </socket-providers>
+
+    <password-providers>
+      <password-provider id="test-pass">
+        <oci:secrets-password-provider>
+          <oci:secret-id>foo</oci:secret-id>
+          <oci:secrets-client>
+            <instance>
+              <class-name>com.oracle.coherence.oci.secret.testing.SecretsClientStub</class-name>
+              <init-params>
+                <init-param>
+                  <param-type>string</param-type>
+                  <param-value system-property="test.oci.auth.file"/>
+                </init-param>
+              </init-params>
+            </instance>
+          </oci:secrets-client>
+        </oci:secrets-password-provider>
+      </password-provider>
+    </password-providers>
+
+  </cluster-config>
+</coherence>
