@@ -73,8 +73,18 @@ jobs:
     - name: Build
       run: mvn --batch-mode -e clean install --file pom.xml
 
-    - uses: actions/upload-artifact@v1
+    # Upload build artifacts for diagnosing failures
+    - name: Build Artifacts test logs
+      uses: actions/upload-artifact@v2
       if: failure()
       with:
         name: test-output
-        path: build/_output/test-logs
+        path: ./**/target/test-output/**/*
+
+      # Upload test reports failures
+    - name: Build Artifacts test reports
+      uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: test-reports
+        path: ./**/target/*-reports/**/*
