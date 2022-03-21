@@ -7,10 +7,11 @@
 
 package com.oracle.coherence.oci.secret.util;
 
-import com.oracle.bmc.secrets.SecretsClient;
+import com.oracle.bmc.OCID;
 
 import com.tangosol.net.InputStreamPasswordProvider;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -19,7 +20,6 @@ import java.io.InputStream;
  * phrase from an OCI secret.
  *
  * @author Jonathan Knight  2022.01.25
- * @since 22.06
  */
 public class SecretsPasswordProvider
         extends InputStreamPasswordProvider
@@ -27,36 +27,76 @@ public class SecretsPasswordProvider
     /**
      * Create a {@link SecretsPasswordProvider}.
      *
-     * @param client  the {@link SecretsClient} to use to retrieve secrets
-     * @param sId     the identifier of the secret to retrieve
+     * @param fetcher         the {@link SecretsFetcher} to fetch secrets
+     * @param sSecretId       the OCID or name of the secret to retrieve
+     * @param sCompartmentId  the optional OCI compartment OCID if the secret id is a name instead of an OCID
      */
-    public SecretsPasswordProvider(SecretsClient client, String sId)
+    public SecretsPasswordProvider(SecretsFetcher fetcher, String sSecretId, String sCompartmentId)
         {
-        this(new SecretsFetcher(client), sId);
-        }
-
-    /**
-     * Create a {@link SecretsPasswordProvider}.
-     *
-     * @param fetcher  the {@link SecretsFetcher} to use to retrieve secrets
-     * @param sId      the identifier of the secret to retrieve
-     */
-    public SecretsPasswordProvider(SecretsFetcher fetcher, String sId)
-        {
-        f_fetcher = fetcher;
-        f_sId     = sId;
+        f_fetcher        = fetcher;
+        f_sSecretId      = sSecretId;
+        f_sCompartmentId = sCompartmentId;
         }
 
     @Override
     protected InputStream getInputStream() throws IOException
         {
-        return f_fetcher.get(f_sId);
+        byte[] abData;
+        if (OCID.isValid(f_sSecretId))
+            {
+            // Id is an OCID so look it up directly
+            abData = f_fetcher.get(f_sSecretId);
+            }
+        else
+            {
+            // Id is not an OCID, so assume it is a name
+            if (f_sCompartmentId == null || f_sCompartmentId.isEmpty())
+                {
+                throw new IllegalStateException("Secret id is not an OCID, "
+                        + "but no Compartment Id was set so it cannot be looked up as a secret name. "
+                        + "id=" + f_sSecretId);
+                }
+
+            abData = f_fetcher.get(f_sSecretId, f_sCompartmentId);
+            }
+
+        return abData == null ? null : new ByteArrayInputStream(abData);
         }
 
+    /**
+     * Return the OCID or name of the secret to retrieve.
+     *
+     * @return the OCID or name of the secret to retrieve
+     */
     protected String getSecretId()
         {
-        return f_sId;
+        return f_sSecretId;
         }
+
+    /**
+     * Return the optional OCI compartment OCID that must be supplied
+     * if the {@link #f_sSecretId} field is a name instead of an OCID
+     *
+     * @return the optional OCI compartment OCID that must be supplied
+     *         if the {@link #f_sSecretId} field is a name instead of
+     *         an OCID
+     */
+    protected String getCompartmentId()
+        {
+        return f_sCompartmentId;
+        }
+
+    /**
+     * Return the {@link SecretsFetcher} to use to retrieve secrets.
+     *
+     * @return the {@link SecretsFetcher} to use to retrieve secrets
+     */
+    protected SecretsFetcher getSecretsFetcher()
+        {
+        return f_fetcher;
+        }
+
+    // ----- data members ---------------------------------------------------
 
     /**
      * The Secret Service client.
@@ -66,5 +106,10 @@ public class SecretsPasswordProvider
     /**
      * The Id of the secret to retrieve.
      */
-    private final String f_sId;
+    private final String f_sSecretId;
+
+    /**
+     * The OCI compartment identifier.
+     */
+    private final String f_sCompartmentId;
     }

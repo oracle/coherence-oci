@@ -10,7 +10,6 @@
             xmlns:coh="http://xmlns.oracle.com/coherence/coherence-operational-config"
             xmlns="class://com.oracle.coherence.oci.config.OCINamespaceHandler"
             elementFormDefault="qualified"
-            attributeFormDefault="unqualified"
             version="1.0">
 
   <xsd:annotation>
@@ -27,6 +26,8 @@
   <xsd:import namespace="http://xmlns.oracle.com/coherence/coherence-operational-config"
               schemaLocation="coherence-operational-config.xsd"/>
 
+  <!-- ================ Common OCI XSD Elements ================= -->
+
   <xsd:element name="authentication">
     <xsd:annotation>
       <xsd:documentation>
@@ -39,12 +40,25 @@
       </xsd:documentation>
     </xsd:annotation>
     <xsd:complexType>
-      <xsd:choice>
-        <xsd:element ref="oci-config-file"/>
-        <xsd:element ref="coh:instance"/>
-      </xsd:choice>
+        <xsd:sequence>
+          <xsd:group ref="coh:instance" />
+        </xsd:sequence>
+        <xsd:attribute name="system-property" type="xsd:normalizedString"/>
+        <xsd:attribute name="id" type="xsd:NMTOKEN" />
     </xsd:complexType>
   </xsd:element>
+
+  <xsd:group name="named-authentication">
+      <xsd:annotation>
+          <xsd:documentation>
+              The named-authentication is a reference to another authentication.
+          </xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+          <xsd:element name="name" type="coh:coherence-string-type" />
+          <xsd:element ref="coh:init-params" minOccurs="0" />
+      </xsd:sequence>
+  </xsd:group>
 
   <xsd:element name="oci-config-file">
     <xsd:annotation>
@@ -59,8 +73,6 @@
       <xsd:group ref="oci-config-file-group"/>
     </xsd:complexType>
   </xsd:element>
-
-  <!-- ================ Common OCI XSD Elements ================= -->
 
   <xsd:group name="oci-config-file-group">
     <xsd:annotation>
@@ -96,86 +108,78 @@
     </xsd:annotation>
   </xsd:element>
 
-  <!-- ============== Secrets Service XSD Elements ============== -->
+  <!-- ============== Vault/Secret Service XSD Elements ============== -->
 
-  <xsd:element name="secrets-key-loader">
+  <xsd:element name="secrets-key" type="secret-loader-type">
     <xsd:annotation>
       <xsd:documentation>
         The secrets-key-loader element defines a PrivateKeyLoader that
         loads named PrivateKey instances from the OCI Secret Service.
 
-        Used in: key-store-resolver
+        If the contents of the element are only text this value must
+        be a valid OCID referring to an existing secret.
+
+        Alternatively the secret-name and compartment-id elements can
+        be used to load the latest version of a named secret.
+
+        Used in: identity-manager
       </xsd:documentation>
     </xsd:annotation>
-    <xsd:complexType>
-      <xsd:sequence>
-        <xsd:group ref="secrets-client-group"/>
-      </xsd:sequence>
-    </xsd:complexType>
   </xsd:element>
 
-  <xsd:element name="secrets-cert-loader">
+  <xsd:element name="secrets-cert" type="secret-loader-type">
     <xsd:annotation>
       <xsd:documentation>
         The secrets-cert-loader element defines a CertificateLoader that
         loads named Certificate instances from the OCI Secret Service.
 
-        Used in: key-store-resolver
+        Used in: identity-manager, trust-manager
       </xsd:documentation>
     </xsd:annotation>
-    <xsd:complexType>
-      <xsd:sequence>
-        <xsd:group ref="secrets-client-group"/>
-      </xsd:sequence>
-    </xsd:complexType>
   </xsd:element>
 
-  <xsd:element name="secrets-ca-cert-loader">
-    <xsd:annotation>
-      <xsd:documentation>
-        The secrets-ca-cert-loader element defines a CA CertificateLoader
-        that loads named CA Certificate instances from the OCI Secret Service.
-
-        Used in: key-store-resolver
-      </xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexType>
-      <xsd:sequence>
-        <xsd:group ref="secrets-client-group"/>
-      </xsd:sequence>
-    </xsd:complexType>
-  </xsd:element>
-
-  <xsd:element name="secrets-key-store-loader">
+  <xsd:element name="secrets-key-store" type="secret-loader-type">
     <xsd:annotation>
       <xsd:documentation>
         The secrets-key-store-loader element defines a KeyStoreLoader that
         loads named PrivateKey instances from the OCI Secret Service.
 
-        Used in: key-store-resolver
+        Used in: key-store
       </xsd:documentation>
     </xsd:annotation>
-    <xsd:complexType>
-      <xsd:sequence>
-        <xsd:group ref="secrets-client-group"/>
-      </xsd:sequence>
-    </xsd:complexType>
   </xsd:element>
 
-  <xsd:element name="secrets-password-provider">
+  <xsd:element name="secrets-password-provider" type="secret-loader-type">
     <xsd:annotation>
       <xsd:documentation>
         The PasswordProvider that retrieves the credentials from
         the OCI Secret Service.
+
+        Used in: identity-manager, trust-manager, key-store
       </xsd:documentation>
     </xsd:annotation>
-    <xsd:complexType>
-      <xsd:sequence>
-        <xsd:element ref="secret-id"/>
-        <xsd:group ref="secrets-client-group"/>
-      </xsd:sequence>
-    </xsd:complexType>
   </xsd:element>
+
+  <xsd:complexType name="secret-loader-type" mixed="true">
+    <xsd:annotation>
+      <xsd:documentation>
+        The secret-loader-type is a base type for elements that
+        configure a type that loads secrets by id or name and
+        compartment.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:choice>
+        <xsd:element ref="secret-id" minOccurs="0"/>
+        <xsd:group ref="secrets-name-group" minOccurs="0"/>
+      </xsd:choice>
+      <xsd:element ref="authentication" minOccurs="0"/>
+      <xsd:element ref="secrets-client" minOccurs="0"/>
+      <xsd:element ref="vaults-client" minOccurs="0"/>
+    </xsd:sequence>
+    <xsd:attribute name="id" type="xsd:NMTOKEN" />
+    <xsd:attribute name="system-property" type="xsd:normalizedString" />
+  </xsd:complexType>
 
   <xsd:element name="secret-id" type="coh:coherence-string-type">
     <xsd:annotation>
@@ -185,21 +189,34 @@
     </xsd:annotation>
   </xsd:element>
 
-  <xsd:group name="secrets-client-group">
+  <xsd:group name="secrets-name-group">
     <xsd:annotation>
       <xsd:documentation>
-        The secrets-client-group is a group of elements that
-        define an OCI Secrets Service client.
-
-        Used in: secrets-key-loader, secrets-cert-loader,
-        secrets-keystore-loader, secrets-password-provider
+        The secrets-name-group is a group of elements that
+        define an OCI secret by name and compartment.
       </xsd:documentation>
     </xsd:annotation>
-    <xsd:choice>
-      <xsd:element ref="authentication" minOccurs="0"/>
-      <xsd:element ref="secrets-client" minOccurs="0"/>
-    </xsd:choice>
+    <xsd:sequence>
+      <xsd:element ref="secret-name" />
+      <xsd:element ref="compartment-id" />
+    </xsd:sequence>
   </xsd:group>
+
+  <xsd:element name="secret-name" type="coh:coherence-string-type">
+    <xsd:annotation>
+      <xsd:documentation>
+        The name of a secret in the OCI Secret Service.
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:element name="compartment-id" type="coh:coherence-string-type">
+    <xsd:annotation>
+      <xsd:documentation>
+        The identifier of an OCI compartment.
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
 
   <xsd:element name="secrets-client">
     <xsd:annotation>
@@ -207,13 +224,26 @@
         The secrets-client element defines a custom SecretsClient
         implementation that will be used to connect to the OCI
         Secrets Service.
-
-        Used in: secrets-password-provider
       </xsd:documentation>
     </xsd:annotation>
     <xsd:complexType>
       <xsd:sequence>
-        <xsd:element ref="coh:instance"/>
+        <xsd:group ref="coh:instance"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="vaults-client">
+    <xsd:annotation>
+      <xsd:documentation>
+        The vaults-client element defines a custom VaultsClient
+        implementation that will be used to connect to the OCI
+        Vault Service.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:group ref="coh:instance"/>
       </xsd:sequence>
     </xsd:complexType>
   </xsd:element>

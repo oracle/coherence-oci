@@ -8,8 +8,14 @@
 package com.oracle.coherence.oci.secret.config;
 
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
+
 import com.oracle.bmc.secrets.SecretsClient;
 
+import com.oracle.bmc.vault.VaultsClient;
+
+import com.oracle.coherence.oci.config.OCINamespaceHandler;
+
+import com.oracle.coherence.oci.secret.util.SecretsFetcher;
 import com.oracle.coherence.oci.secret.util.SecretsPasswordProvider;
 
 import com.tangosol.coherence.config.ParameterList;
@@ -18,6 +24,7 @@ import com.tangosol.coherence.config.builder.ParameterizedBuilder;
 
 import com.tangosol.config.annotation.Injectable;
 
+import com.tangosol.config.expression.Expression;
 import com.tangosol.config.expression.ParameterResolver;
 
 import com.tangosol.net.PasswordProvider;
@@ -27,7 +34,6 @@ import com.tangosol.net.PasswordProvider;
  * retrieves a pass phrase from a named secret in the OCI Secrets Service.
  *
  * @author Jonathan Knight  2022.01.25
- * @since 22.06
  */
 public class SecretsPasswordProviderBuilder
         extends BaseSecretsBuilder<PasswordProvider>
@@ -37,48 +43,57 @@ public class SecretsPasswordProviderBuilder
     @Override
     public PasswordProvider realize(ParameterResolver resolver, ClassLoader loader, ParameterList parameterList)
         {
-        if (m_sSecretId == null || m_sSecretId.isEmpty())
+        String sSecretId      = getSecretId().evaluate(resolver);
+        String sCompartmentId = getCompartmentId().evaluate(resolver);
+
+        if (sSecretId != null && !sSecretId.isEmpty())
             {
-            return PasswordProvider.NullImplementation;
+            AbstractAuthenticationDetailsProvider auth = realizeAuthentication(resolver, loader, parameterList);
+
+            SecretsClient secretsClient = realizeSecretsClient(resolver, loader, parameterList);
+            VaultsClient  vaultsClient  = realizeVaultsClient(resolver, loader, parameterList);
+
+            SecretsFetcher fetcher = new SecretsFetcher(auth, secretsClient, vaultsClient);
+
+            return new SecretsPasswordProvider(fetcher, sSecretId, sCompartmentId);
             }
 
-        SecretsClient client = realizeClient(resolver, loader, parameterList);
-        return new SecretsPasswordProvider(client, m_sSecretId);
+        return PasswordProvider.NullImplementation;
         }
 
     // ----- BaseSecretsBuilder methods -------------------------------------
 
     @Override
-    @Injectable("authentication")
+    @Injectable(OCINamespaceHandler.ELEMENT_AUTHENTICATION)
     public void setAuthentication(ParameterizedBuilder<AbstractAuthenticationDetailsProvider> builder)
         {
         super.setAuthentication(builder);
         }
 
     @Override
-    @Injectable("secrets-client")
-    public void setClientBuilder(ParameterizedBuilder<SecretsClient> builder)
+    @Injectable(SecretsNamespaceHandlerExtension.ELEMENT_SECRETS_CLIENT)
+    public void setSecretsClientBuilder(ParameterizedBuilder<SecretsClient> builder)
         {
-        super.setClientBuilder(builder);
+        super.setSecretsClientBuilder(builder);
         }
 
-    @Injectable("secret-id")
-    public void setSecretId(String sId)
+    @Override
+    @Injectable(SecretsNamespaceHandlerExtension.ELEMENT_SECRET_ID)
+    public void setSecretId(Expression<String> sId)
         {
-        m_sSecretId = sId;
+        super.setSecretId(sId);
         }
 
-    // ----- accessors ------------------------------------------------------
-
-    public String getSecretId()
+    @Injectable(SecretsNamespaceHandlerExtension.ELEMENT_SECRET_NAME)
+    public void setSecretName(Expression<String> sName)
         {
-        return m_sSecretId;
+        super.setSecretName(sName);
         }
 
-    // ----- data members ---------------------------------------------------
-
-    /**
-     * The identifier of the secret to fetch.
-     */
-    private String m_sSecretId;
+    @Override
+    @Injectable(OCINamespaceHandler.ELEMENT_COMPARTMENT)
+    public void setCompartmentId(Expression<String> sId)
+        {
+        super.setCompartmentId(sId);
+        }
     }

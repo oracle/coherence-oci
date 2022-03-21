@@ -30,7 +30,6 @@ import java.util.function.Supplier;
  * A mock {@link SecretsClient}.
  *
  * @author Jonathan Knight  2022.01.25
- * @since 22.06
  */
 public class SecretsClientStub
         extends SecretsClient
@@ -40,9 +39,9 @@ public class SecretsClientStub
     /**
      * Create a {@link SecretsClientStub}.
      */
-    public SecretsClientStub(File file, String sKeyPass)
+    public SecretsClientStub(File file)
         {
-        this(new BasicAuthenticationStub(file, sKeyPass));
+        this(new BasicAuthenticationStub("test", file, null));
         }
 
     /**
@@ -50,15 +49,7 @@ public class SecretsClientStub
      */
     public SecretsClientStub(String sFile)
         {
-        this(new BasicAuthenticationStub(new File(sFile), null));
-        }
-
-    /**
-     * Create a {@link SecretsClientStub}.
-     */
-    public SecretsClientStub(File file)
-        {
-        this(new BasicAuthenticationStub(file, null));
+        this(new BasicAuthenticationStub("test", new File(sFile), null));
         }
 
     /**

@@ -10,10 +10,14 @@ package com.oracle.coherence.oci.secret.config;
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import com.oracle.bmc.secrets.SecretsClient;
 
+import com.oracle.bmc.vault.VaultsClient;
+import com.oracle.coherence.oci.config.AuthenticationAwareBuilder;
+import com.oracle.coherence.oci.config.AuthenticationBuilder;
 import com.tangosol.coherence.config.ParameterList;
 import com.tangosol.coherence.config.builder.ParameterizedBuilder;
 
-import com.tangosol.config.expression.Parameter;
+import com.tangosol.config.expression.Expression;
+import com.tangosol.config.expression.LiteralExpression;
 import com.tangosol.config.expression.ParameterResolver;
 
 /**
@@ -21,36 +25,139 @@ import com.tangosol.config.expression.ParameterResolver;
  * require a {@link SecretsClient OCI Secret Service client}.
  *
  * @author Jonathan Knight  2022.01.25
- * @since 22.06
  */
 public abstract class BaseSecretsBuilder<T>
-        implements ParameterizedBuilder<T>
+        implements ParameterizedBuilder<T>, AuthenticationAwareBuilder<T>
     {
     // ----- setters --------------------------------------------------------
 
     /**
      * Inject the OCI secrets service client.
      *
-     * @param builder  an {@link ParameterizedBuilder} that builds an
+     * @param builder  a {@link ParameterizedBuilder} that builds an
      *                 OCI secrets service client
      */
-    public void setClientBuilder(ParameterizedBuilder<SecretsClient> builder)
+    public void setSecretsClientBuilder(ParameterizedBuilder<SecretsClient> builder)
         {
-        m_clientBuilder = builder;
+        m_secretsClientBuilder = builder;
         }
 
     /**
-     * Inject the OCI {@link AbstractAuthenticationDetailsProvider} to use to create
-     * a secrets service client.
+     * Return the OCI secrets service client.
      *
-     * @param builder  an {@link ParameterizedBuilder} that builds an {@link AbstractAuthenticationDetailsProvider}
+     * @return a {@link ParameterizedBuilder} that builds an
+     *         OCI secrets service client
      */
+    public ParameterizedBuilder<SecretsClient> getSecretsClientBuilder()
+        {
+        return m_secretsClientBuilder;
+        }
+
+    /**
+     * Inject the OCI vault service client.
+     *
+     * @param builder  a {@link ParameterizedBuilder} that builds an
+     *                 OCI vault service client
+     */
+    public void setVaultsClientBuilder(ParameterizedBuilder<VaultsClient> builder)
+        {
+        m_vaultsClientBuilder = builder;
+        }
+
+    /**
+     * Return the OCI vault service client.
+     *
+     * @return a {@link ParameterizedBuilder} that builds an
+     *         OCI vault service client
+     */
+    public ParameterizedBuilder<VaultsClient> getVaultsClientBuilder()
+        {
+        return m_vaultsClientBuilder;
+        }
+
+    /**
+     * Set the secret OCID.
+     *
+     * @param sId  the secret OCID
+     */
+    public void setSecretId(Expression<String> sId)
+        {
+        m_exprSecretId = sId == null ? new LiteralExpression<>(null) : sId;
+        }
+
+    /**
+     * Set the secret name.
+     *
+     * @param sName  the secret name
+     */
+    public void setSecretName(Expression<String> sName)
+        {
+        m_exprSecretId = sName == null ? new LiteralExpression<>(null) : sName;
+        }
+
+    /**
+     * Returns the secret identifier or name.
+     *
+     * @return the secret identifier or name
+     */
+    public Expression<String> getSecretId()
+        {
+        return m_exprSecretId;
+        }
+
+    /**
+     * Set the compartment OCID.
+     *
+     * @param sId  the compartment OCID
+     *
+     * @throws IllegalArgumentException if the id is not a valid OCID
+     */
+    public void setCompartmentId(Expression<String> sId)
+        {
+        m_exprCompartmentId = sId == null ? new LiteralExpression<>(null) : sId;
+        }
+
+    /**
+     * Returns the secret compartment OCID.
+     *
+     * @return the secret compartment OCID
+     */
+    public Expression<String> getCompartmentId()
+        {
+        return m_exprCompartmentId;
+        }
+
+    // ----- AuthenticationAwareBuilder methods -----------------------------
+
+    @Override
     public void setAuthentication(ParameterizedBuilder<AbstractAuthenticationDetailsProvider> builder)
         {
-        m_authBuilder = builder;
+        m_authBuilder = builder == null ? AuthenticationBuilder.INSTANCE : builder;
+        }
+
+    @Override
+    public ParameterizedBuilder<AbstractAuthenticationDetailsProvider> getAuthentication()
+        {
+        return m_authBuilder;
         }
 
     // ----- helper methods -------------------------------------------------
+
+    /**
+     * Realize the configured {@link AbstractAuthenticationDetailsProvider OCI authentication provider} to use to
+     * connect to the OCI Secrets Service.
+     *
+     * @param resolver       an optional {@link ParameterResolver}
+     * @param loader         an optional {@link ClassLoader} to use
+     * @param parameterList  an optional {@link ParameterList}
+     *
+     * @return the configured {@link AbstractAuthenticationDetailsProvider OCI authentication provider}
+     *         or {@code null} if no authentication was configured
+     */
+    protected AbstractAuthenticationDetailsProvider realizeAuthentication(ParameterResolver resolver, ClassLoader loader, ParameterList parameterList)
+        {
+        return m_authBuilder.realize(resolver, loader, parameterList);
+        }
 
     /**
      * Realize the configured {@link SecretsClient} to use to connect to the OCI Secrets Service.
@@ -61,48 +168,57 @@ public abstract class BaseSecretsBuilder<T>
      *
      * @return the configured {@link SecretsClient} to use to connect to the OCI Secrets Service
      */
-    protected SecretsClient realizeClient(ParameterResolver resolver, ClassLoader loader, ParameterList parameterList)
+    protected SecretsClient realizeSecretsClient(ParameterResolver resolver, ClassLoader loader, ParameterList parameterList)
         {
-        if (m_clientBuilder != null)
+        if (m_secretsClientBuilder != null)
             {
-            return m_clientBuilder.realize(resolver, loader, parameterList);
+            return m_secretsClientBuilder.realize(resolver, loader, parameterList);
             }
-
-        if (m_authBuilder != null)
-            {
-            AbstractAuthenticationDetailsProvider auth = m_authBuilder.realize(resolver, loader, parameterList);
-            return SecretsClient.builder().build(auth);
-            }
-
-        Parameter parameter = resolver.resolve(CLIENT_BUILDER);
-        if (parameter != null)
-            {
-            Object o = parameter.evaluate(resolver).get();
-            if (o instanceof SecretsClientBuilder)
-                {
-                return ((SecretsClientBuilder) o).realize(resolver, loader, parameterList);
-                }
-            }
-
-        return SecretsClientBuilder.DEFAULT.realize(resolver, loader, parameterList);
+        return null;
         }
 
-    // ----- constants ------------------------------------------------------
-
     /**
-     * The {@link SecretsClientBuilder} parameter name.
+     * Realize the configured {@link VaultsClient} to use to connect to the OCI Vault Service.
+     *
+     * @param resolver       an optional {@link ParameterResolver}
+     * @param loader         an optional {@link ClassLoader} to use
+     * @param parameterList  an optional {@link ParameterList}
+     *
+     * @return the configured {@link VaultsClient} to use to connect to the OCI Vault Service
      */
-    public static final String CLIENT_BUILDER = "SecretsClientBuilder";
+    protected VaultsClient realizeVaultsClient(ParameterResolver resolver, ClassLoader loader, ParameterList parameterList)
+        {
+        if (m_vaultsClientBuilder != null)
+            {
+            return m_vaultsClientBuilder.realize(resolver, loader, parameterList);
+            }
+        return null;
+        }
 
     // ----- data members ---------------------------------------------------
 
     /**
      * The {@link SecretsClient} builder.
      */
-    private ParameterizedBuilder<SecretsClient> m_clientBuilder;
+    private ParameterizedBuilder<SecretsClient> m_secretsClientBuilder;
+
+    /**
+     * The {@link VaultsClient} builder.
+     */
+    private ParameterizedBuilder<VaultsClient> m_vaultsClientBuilder;
 
     /**
      * The {@link AbstractAuthenticationDetailsProvider} builder.
      */
-    private ParameterizedBuilder<AbstractAuthenticationDetailsProvider> m_authBuilder;
+    private ParameterizedBuilder<AbstractAuthenticationDetailsProvider> m_authBuilder = AuthenticationBuilder.INSTANCE;
+
+    /**
+     * The Secret identifier.
+     */
+    private Expression<String> m_exprSecretId = new LiteralExpression<>(null);
+
+    /**
+     * The OCI compartment identifier.
+     */
+    private Expression<String> m_exprCompartmentId = new LiteralExpression<>(null);
     }

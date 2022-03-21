@@ -16,7 +16,6 @@ import java.io.IOException;
  * A base class for tests needing self-signed keys and certs
  *
  * @author Jonathan Knight  2022.01.25
- * @since 22.06
  */
 public class AbstractKeysAndCertsTest
     {

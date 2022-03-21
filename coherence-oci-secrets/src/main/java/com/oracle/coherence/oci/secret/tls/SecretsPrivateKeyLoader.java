@@ -7,52 +7,79 @@
 
 package com.oracle.coherence.oci.secret.tls;
 
-import com.oracle.bmc.secrets.SecretsClient;
+import com.oracle.bmc.OCID;
+
+import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
+
+import com.oracle.coherence.common.base.Logger;
 
 import com.oracle.coherence.oci.secret.util.SecretsFetcher;
 
 import com.tangosol.net.ssl.AbstractPrivateKeyLoader;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import java.util.Objects;
 
 /**
  * A {@link com.tangosol.net.ssl.PrivateKeyLoader} that loads a key
  * from an OCI secret.
  *
  * @author Jonathan Knight  2022.01.25
- * @since 22.06
  */
 public class SecretsPrivateKeyLoader
         extends AbstractPrivateKeyLoader
     {
     // ----- constructors ---------------------------------------------------
 
-    public SecretsPrivateKeyLoader(SecretsClient client)
+    /**
+     * Create a {@link SecretsPrivateKeyLoader}.
+     *
+     * @param auth              the {@link AbstractAuthenticationDetailsProvider OCI authentication} to use
+     * @param sSecret           a secret OCID or name
+     * @param sCompartmentOCID  an optional OCI compartment OCID if the secret is a name instead of an OCID
+     */
+    public SecretsPrivateKeyLoader(AbstractAuthenticationDetailsProvider auth, String sSecret, String sCompartmentOCID)
         {
-        f_fetcher = new SecretsFetcher(Objects.requireNonNull(client));
+        super(sSecret);
+        f_fetcher          = new SecretsFetcher(auth);
+        f_sSecret          = sSecret;
+        f_sCompartmentOCID = sCompartmentOCID;
         }
 
     // ----- AbstractPrivateKeyLoader methods -------------------------------
 
     @Override
-    protected InputStream getInputStream(String sId) throws IOException
+    protected InputStream getInputStream() throws IOException
         {
-        return f_fetcher.get(sId);
+        Logger.finest("Loading private key from " + this);
+
+        byte[] abData;
+
+        if (OCID.isValid(f_sSecret))
+            {
+            abData = f_fetcher.get(f_sSecret);
+            }
+        else
+            {
+            abData = f_fetcher.get(f_sSecret, f_sCompartmentOCID);
+            }
+
+        return abData == null ? null : new ByteArrayInputStream(abData);
         }
 
-    // ----- helper methods -------------------------------------------------
+    // ----- Object methods -------------------------------------------------
 
-    /**
-     * Returns the {@link SecretsFetcher} used by this {@link SecretsPrivateKeyLoader}.
-     *
-     * @return the {@link SecretsFetcher} used by this {@link SecretsPrivateKeyLoader}
-     */
-    public SecretsFetcher getSecretsFetcher()
+    @Override
+    public String toString()
         {
-        return f_fetcher;
+        if (f_sCompartmentOCID == null)
+            {
+            return "OCISecretKey(" + f_sSecret + "}";
+            }
+        return "OCISecretKey(" +
+                "secret='" + f_sSecret + '\'' +
+                ", compartment='" + f_sCompartmentOCID + "'}";
         }
 
     // ----- data members ---------------------------------------------------
@@ -61,4 +88,14 @@ public class SecretsPrivateKeyLoader
      * The Secret Service client.
      */
     private final SecretsFetcher f_fetcher;
+
+    /**
+     * A secret OCID or name.
+     */
+    private final String f_sSecret;
+
+    /**
+     * An optional OCI compartment OCID if the secret is a name instead of an OCID.
+     */
+    private final String f_sCompartmentOCID;
     }

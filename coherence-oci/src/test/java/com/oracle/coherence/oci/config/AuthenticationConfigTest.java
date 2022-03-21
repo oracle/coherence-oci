@@ -7,8 +7,6 @@
 
 package com.oracle.coherence.oci.config;
 
-import com.tangosol.coherence.config.NamedResource;
-
 import com.tangosol.coherence.config.builder.NamedResourceBuilder;
 import com.tangosol.coherence.config.builder.ParameterizedBuilder;
 import com.tangosol.coherence.config.builder.ParameterizedBuilderRegistry;
@@ -114,7 +112,7 @@ public class AuthenticationConfigTest
 
         Cluster                             cluster  = CacheFactory.getCluster();
         ParameterizedBuilderRegistry        registry = ((OperationalContext) cluster).getBuilderRegistry();
-        ParameterizedBuilder<NamedResource> builder  = registry.getBuilder(NamedResource.class, sResourceName);
+        ParameterizedBuilder<?>             builder  = registry.getBuilder(NamedResourceBuilder.class, sResourceName);
 
         assertThat(builder, is(instanceOf(NamedResourceBuilder.class)));
         assertThat(((NamedResourceBuilder) builder).getName(), is(sResourceName));

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (c) 2022, Oracle and/or its affiliates.
+  ~
+  ~ Licensed under the Universal Permissive License v 1.0 as shown at
+  ~ https://oss.oracle.com/licenses/upl.
+  -->
+<coherence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://xmlns.oracle.com/coherence/coherence-operational-config"
+           xmlns:oci="class://com.oracle.coherence.oci.config.OCINamespaceHandler"
+           xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-operational-config coherence-operational-config.xsd
+                                class://com.oracle.coherence.oci.config.OCINamespaceHandler coherence-oci.xsd">
+
+  <cluster-config>
+    <resources>
+      <resource id="oci-authentication">
+          <class-factory-name>com.oracle.coherence.oci.config.CustomAuthFactory</class-factory-name>
+          <method-name>build</method-name>
+      </resource>
+    </resources>
+  </cluster-config>
+
+</coherence>

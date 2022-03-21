@@ -8,16 +8,23 @@
 package com.oracle.coherence.oci.testing;
 
 import com.oracle.coherence.common.base.Classes;
+
 import com.oracle.coherence.oci.config.OCINamespaceHandler;
+
 import com.tangosol.coherence.config.ParameterList;
 import com.tangosol.coherence.config.ParameterMacroExpressionParser;
 import com.tangosol.coherence.config.ResolvableParameterList;
 import com.tangosol.coherence.config.builder.ParameterizedBuilder;
+
 import com.tangosol.coherence.config.xml.OperationalConfigNamespaceHandler;
+
 import com.tangosol.config.expression.Parameter;
+
 import com.tangosol.config.xml.DocumentProcessor;
+
 import com.tangosol.run.xml.XmlDocument;
 import com.tangosol.run.xml.XmlElement;
+
 import com.tangosol.util.Base;
 import com.tangosol.util.SimpleResourceRegistry;
 
@@ -29,7 +36,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * A helper class for test XML configurations.
  *
  * @author Jonathan Knight  2022.01.25
- * @since 22.06
  */
 public class ConfigHelper
     {

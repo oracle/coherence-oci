@@ -15,7 +15,6 @@ import com.oracle.coherence.oci.secret.config.SecretsClientBuilder;
  * A mock {@link SecretsClientBuilder}.
  *
  * @author Jonathan Knight  2022.01.25
- * @since 22.06
  */
 public class ClientBuilderStub
         implements SecretsClientBuilder

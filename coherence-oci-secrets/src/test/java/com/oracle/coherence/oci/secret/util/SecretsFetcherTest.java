@@ -14,6 +14,7 @@ import com.oracle.coherence.oci.secret.testing.SecretsClientStub;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -30,22 +31,18 @@ public class SecretsFetcherTest
         SecretsClientStub client = new SecretsClientStub(s_clientKeyCertPair.m_fileKeyPEMNoPass);
         client.addSecret("foo", "foo-secret");
 
-        SecretsFetcher fetcher = new SecretsFetcher(client);
-        InputStream    in      = fetcher.get("foo");
+        SecretsFetcher fetcher = new SecretsFetcher(client, null);
+        byte[]         abData  = fetcher.get("foo");
 
-        assertThat(in, is(notNullValue()));
+        assertThat(abData, is("foo-secret".getBytes(StandardCharsets.UTF_8)));
         }
 
     @Test
     public void shouldFailToFetchSecret()
         {
         SecretsClientStub client  = new SecretsClientStub(s_clientKeyCertPair.m_fileKeyPEMNoPass);
-        SecretsFetcher    fetcher = new SecretsFetcher(client);
+        SecretsFetcher    fetcher = new SecretsFetcher(client, null);
 
         assertThrows(IllegalArgumentException.class, () -> fetcher.get("foo"));
         }
-
-    // ----- data members ---------------------------------------------------
-
-    private static SecretsClientStub s_client;
     }

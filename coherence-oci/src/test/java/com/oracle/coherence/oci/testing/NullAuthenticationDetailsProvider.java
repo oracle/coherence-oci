@@ -8,6 +8,7 @@
 package com.oracle.coherence.oci.testing;
 
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
+
 import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider;
 
 import java.io.ByteArrayInputStream;
@@ -17,15 +18,10 @@ import java.io.InputStream;
  * A no-op implementation of {@link AbstractAuthenticationDetailsProvider}.
  *
  * @author Jonathan Knight  2022.01.25
- * @since 22.06
  */
 public class NullAuthenticationDetailsProvider
         implements BasicAuthenticationDetailsProvider
     {
-    public NullAuthenticationDetailsProvider()
-        {
-        }
-
     @Override
     public String getKeyId()
         {

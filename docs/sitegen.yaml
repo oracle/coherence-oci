@@ -1,0 +1,90 @@
+# Copyright (c) 2022, Oracle and/or its affiliates. All rights reserved.
+# Licensed under the Universal Permissive License v 1.0 as shown at
+# https://oss.oracle.com/licenses/upl.
+
+engine:
+  asciidoctor:
+    imagesdir: "docs/images"
+    libraries:
+      - "asciidoctor-diagram"
+    attributes:
+      commercial-docs-base-url: "https://docs.oracle.com/en/middleware/standalone/coherence/14.1.1.0"
+      source-highlighter: "highlight.js"
+      highlightjs-theme: "idea"
+      plantumlconfig: "_plantuml-config.txt"
+      coherence-maven-group-id: "${coherence.group.id}"
+      javadoc-root: "https://oracle/coherence-oci/${project.version}/api/java/"
+      version-coherence-maven: "${revision}"
+      version-coherence: "${version.lib.coherence}"
+      version-commercial-docs: "14.1.1.0"
+assets:
+  - target: "/"
+    includes:
+      - "docs/css/*.css"
+  - target: "/"
+    includes:
+      - "docs/images/**/*"
+header:
+  favicon:
+    path: "docs/images/logo.png"
+    type: "png"
+  stylesheets:
+    - path: "docs/css/styles.css"
+pages:
+    - includes:
+        - "**/*.adoc"
+      excludes:
+        - "examples/guides/README.adoc"
+        - "examples/tutorials/README.adoc"
+backend:
+    name: "vuetify"
+    homePage: "docs/about/01_overview.adoc"
+    releases:
+        - "${project.version}"
+    navigation:
+      title: "Oracle Coherence & OCI"
+      glyph:
+        type: "image"
+        value: "docs/images/logo.png"
+      items:
+        - title: "Documentation"
+          pathprefix: "/docs"
+          items:
+          - title: "About"
+            pathprefix: "/docs/about"
+            glyph:
+              type: "icon"
+              value: "assistant"
+            items:
+              - includes:
+                  - "docs/about/*.adoc"
+          - title: "OCI Secrets Service"
+            pathprefix: "/docs/secrets"
+            glyph:
+              type: "icon"
+              value: "visibility_off"
+            items:
+              - includes:
+                  - "docs/secrets/*.adoc"
+        - title: "Additional Resources"
+          items:
+            - title: "Slack"
+              glyph:
+                type: "icon"
+                value: "fa-slack"
+              href: "https://join.slack.com/t/oraclecoherence/shared_invite/enQtNzcxNTQwMTAzNjE4LTJkZWI5ZDkzNGEzOTllZDgwZDU3NGM2YjY5YWYwMzM3ODdkNTU2NmNmNDFhOWIxMDZlNjg2MzE3NmMxZWMxMWE"
+            - title: "Coherence Web Site"
+              glyph:
+                type: "icon"
+                value: "fa-globe"
+              href: "https://coherence.community/"
+            - title: "GitHub"
+              glyph:
+                type: "icon"
+                value: "fa-github-square"
+              href: "https://github.com/oracle/coherence-oci/"
+            - title: "Twitter"
+              glyph:
+                type: "icon"
+                value: "fa-twitter-square"
+              href: "https://twitter.com/OracleCoherence/"

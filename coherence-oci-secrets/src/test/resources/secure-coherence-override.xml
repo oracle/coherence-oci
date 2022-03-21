@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (c) 2022, Oracle and/or its affiliates.
+  ~
+  ~ Licensed under the Universal Permissive License v 1.0 as shown at
+  ~ https://oss.oracle.com/licenses/upl.
+  -->
+<coherence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://xmlns.oracle.com/coherence/coherence-operational-config"
+           xmlns:oci="class://com.oracle.coherence.oci.config.OCINamespaceHandler"
+           xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-operational-config coherence-operational-config.xsd
+                               class://com.oracle.coherence.oci.config.OCINamespaceHandler coherence-oci.xsd">
+
+  <cluster-config>
+    <socket-providers>
+      <socket-provider id="oci-client">
+        <ssl>
+          <identity-manager>
+            <oci:secrets-key system-property="test.client.key.ocid"/>
+            <oci:secrets-cert system-property="test.client.cert.ocid"/>
+          </identity-manager>
+          <trust-manager>
+            <oci:secrets-cert system-property="test.server.ca.ocid"/>
+          </trust-manager>
+        </ssl>
+      </socket-provider>
+
+      <socket-provider id="oci-server">
+        <ssl>
+          <identity-manager>
+            <oci:secrets-key system-property="test.server.key.ocid"/>
+            <oci:secrets-cert system-property="test.server.cert.ocid"/>
+          </identity-manager>
+          <trust-manager>
+            <oci:secrets-cert system-property="test.server.ca.ocid"/>
+            <oci:secrets-cert system-property="test.client.ca.ocid"/>
+          </trust-manager>
+        </ssl>
+      </socket-provider>
+    </socket-providers>
+  </cluster-config>
+</coherence>

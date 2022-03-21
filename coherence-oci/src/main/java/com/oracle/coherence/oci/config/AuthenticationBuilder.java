@@ -12,6 +12,11 @@ import com.oracle.bmc.ConfigFileReader;
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
 
+import com.oracle.bmc.util.internal.FileUtils;
+
+import com.oracle.coherence.oci.CoherenceOCI;
+
+import com.tangosol.coherence.config.Config;
 import com.tangosol.coherence.config.ParameterList;
 
 import com.tangosol.coherence.config.builder.ParameterizedBuilder;
@@ -20,6 +25,7 @@ import com.tangosol.config.ConfigurationException;
 
 import com.tangosol.config.annotation.Injectable;
 import com.tangosol.config.expression.Expression;
+import com.tangosol.config.expression.NullParameterResolver;
 import com.tangosol.config.expression.ParameterResolver;
 
 import java.io.IOException;
@@ -29,16 +35,37 @@ import java.io.IOException;
  * instances based on reading an OCI configuration file.
  *
  * @author Jonathan Knight  2022.01.25
- * @since 22.06
  */
 public class AuthenticationBuilder
         implements ParameterizedBuilder<AbstractAuthenticationDetailsProvider>
     {
-    @Override
-    public AbstractAuthenticationDetailsProvider realize(ParameterResolver parameterResolver, ClassLoader classLoader, ParameterList parameterList)
+    /**
+     * Realize a {@link AbstractAuthenticationDetailsProvider} instance.
+     *
+     * @return a {@link AbstractAuthenticationDetailsProvider} instance
+     */
+    public AbstractAuthenticationDetailsProvider realize()
         {
-        String sFileName = m_exFileName == null ? null : m_exFileName.evaluate(parameterResolver);
-        String sProfileName = m_exProfileName == null ? null : m_exProfileName.evaluate(parameterResolver);
+        return realize(new NullParameterResolver(), null, null);
+        }
+
+    @Override
+    public AbstractAuthenticationDetailsProvider realize(ParameterResolver resolver, ClassLoader loader, ParameterList parameterList)
+        {
+        String sFileName    = m_exFileName == null ? null : m_exFileName.evaluate(resolver);
+        String sProfileName = m_exProfileName == null ? null : m_exProfileName.evaluate(resolver);
+
+        if (isNullOrEmpty(sFileName))
+            {
+            // no config file was configured, try the default property/env-var
+            sFileName = Config.getProperty(CoherenceOCI.PROP_OCI_CONFIG_FILE);
+            }
+
+        if (isNullOrEmpty(sProfileName))
+            {
+            // no config profile was configured, try the default property/env-var
+            sProfileName = Config.getProperty(CoherenceOCI.PROP_OCI_CONFIG_PROFILE);
+            }
 
         if (isNullOrEmpty(sFileName) && isNullOrEmpty(sProfileName))
             {
@@ -104,7 +131,8 @@ public class AuthenticationBuilder
             }
         catch (IOException e)
             {
-            throw new ConfigurationException("Could not parse default OCI configuration file",
+            throw new ConfigurationException("Could not parse the default OCI configuration file "
+                    + FileUtils.expandUserHome("~/.oci/config"),
                     "Ensure the OCI environment is correctly configured", e);
             }
         }
@@ -117,7 +145,8 @@ public class AuthenticationBuilder
             }
         catch (IOException e)
             {
-            throw new ConfigurationException("Could not parse default OCI configuration file with profile " + sProfileName,
+            throw new ConfigurationException("Could not parse the default OCI configuration file "
+                    + FileUtils.expandUserHome("~/.oci/config") + " using profile " + sProfileName,
                     "Ensure the OCI environment is correctly configured", e);
             }
         }
@@ -130,7 +159,7 @@ public class AuthenticationBuilder
             }
         catch (IOException e)
             {
-            throw new ConfigurationException("Could not parse default OCI configuration file " + sFileName,
+            throw new ConfigurationException("Could not parse the OCI configuration file " + sFileName,
                     "Ensure the OCI environment is correctly configured", e);
             }
         }
@@ -143,8 +172,8 @@ public class AuthenticationBuilder
             }
         catch (IOException e)
             {
-            throw new ConfigurationException("Could not parse default OCI configuration file "
-                    + sFileName + " with profile " + sProfileName,
+            throw new ConfigurationException("Could not parse the OCI configuration file "
+                    + sFileName + " using profile " + sProfileName,
                     "Ensure the OCI environment is correctly configured", e);
             }
         }
@@ -153,6 +182,13 @@ public class AuthenticationBuilder
         {
         return s == null || s.isEmpty();
         }
+
+    // ----- constants ------------------------------------------------------
+
+    /**
+     * A singleton instance of the {@link AuthenticationBuilder}.
+     */
+    public static final AuthenticationBuilder INSTANCE = new AuthenticationBuilder();
 
     // ----- data members ---------------------------------------------------
 

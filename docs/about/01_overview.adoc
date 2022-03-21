@@ -1,0 +1,40 @@
+///////////////////////////////////////////////////////////////////////////////
+    Copyright (c) 2022, Oracle and/or its affiliates.
+
+    Licensed under the Universal Permissive License v 1.0 as shown at
+    http://oss.oracle.com/licenses/upl.
+///////////////////////////////////////////////////////////////////////////////
+= Overview
+:description: Oracle Coherence OCI Documentation
+:keywords: coherence, OCI, java, documentation
+
+// DO NOT remove this header - it might look like a duplicate of the header above, but
+// both they serve a purpose, and the docs will look wrong if it is removed.
+== Overview
+
+[PILLARS]
+====
+[CARD]
+.Introduction
+[icon=assistant,link=docs/about/01_introduction.adoc]
+--
+Integrations with the OCI Vault and Secrets service,
+for example storing TLS keys and certs as secrets.
+--
+
+====
+
+
+== OCI Integrations
+
+[PILLARS]
+====
+[CARD]
+.Vault & Secrets
+[icon=visibility_off,link=docs/secrets/01_introduction.adoc]
+--
+Integrations with the OCI Vault and Secrets service.
+For example, storing TLS keys and certs as secrets.
+--
+
+====

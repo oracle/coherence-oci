@@ -8,6 +8,7 @@
 package com.oracle.coherence.oci.testing;
 
 import com.tangosol.run.xml.XmlDocument;
+
 import com.tangosol.run.xml.XmlDocumentReference;
 
 import java.util.Objects;
@@ -16,7 +17,6 @@ import java.util.Objects;
  * A mock {@link XmlDocumentReference}.
  *
  * @author Jonathan Knight  2022.01.25
- * @since 22.06
  */
 public class XmlDocumentReferenceStub
         extends XmlDocumentReference

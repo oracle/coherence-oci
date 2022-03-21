@@ -11,9 +11,7 @@ import com.oracle.coherence.oci.config.NamespaceHandlerExtension;
 import com.oracle.coherence.oci.config.OCINamespaceHandler;
 import com.oracle.coherence.oci.config.SimpleBuilderProcessor;
 
-import com.oracle.coherence.oci.secret.tls.SecretsCertificateLoader;
-import com.oracle.coherence.oci.secret.tls.SecretsKeyStoreLoader;
-import com.oracle.coherence.oci.secret.tls.SecretsPrivateKeyLoader;
+import com.tangosol.coherence.config.xml.processor.InstanceProcessor;
 
 /**
  * A {@link NamespaceHandlerExtension} that adds extensions applicable to
@@ -23,7 +21,6 @@ import com.oracle.coherence.oci.secret.tls.SecretsPrivateKeyLoader;
  * the {@link java.util.ServiceLoader}.
  *
  * @author Jonathan Knight  2022.01.25
- * @since 22.06
  */
 public class SecretsNamespaceHandlerExtension
         implements NamespaceHandlerExtension
@@ -33,11 +30,12 @@ public class SecretsNamespaceHandlerExtension
     @Override
     public void extend(OCINamespaceHandler handler)
         {
-        handler.registerProcessor(ELEMENT_CA_CERT_LOADER, SimpleSecretsBuilder.asProcessor(SecretsCertificateLoader::new));
-        handler.registerProcessor(ELEMENT_CERT_LOADER, SimpleSecretsBuilder.asProcessor(SecretsCertificateLoader::new));
-        handler.registerProcessor(ELEMENT_KEY_LOADER, SimpleSecretsBuilder.asProcessor(SecretsPrivateKeyLoader::new));
-        handler.registerProcessor(ELEMENT_KEY_STORE_LOADER, SimpleSecretsBuilder.asProcessor(SecretsKeyStoreLoader::new));
+        handler.registerProcessor(ELEMENT_CERT_LOADER, new SimpleBuilderProcessor<>(SecretsCertificateLoaderBuilder::new));
+        handler.registerProcessor(ELEMENT_KEY_LOADER, new SimpleBuilderProcessor<>(SecretsPrivateKeyLoaderBuilder::new));
+        handler.registerProcessor(ELEMENT_KEY_STORE_LOADER, new SimpleBuilderProcessor<>(SecretsKeyStoreLoaderBuilder::new));
         handler.registerProcessor(ELEMENT_PWD_PROVIDER, new SimpleBuilderProcessor<>(SecretsPasswordProviderBuilder::new));
+        handler.registerProcessor(ELEMENT_SECRETS_CLIENT, new InstanceProcessor());
+        handler.registerProcessor(ELEMENT_VAULTS_CLIENT, new InstanceProcessor());
         }
 
     // ----- constants ------------------------------------------------------
@@ -48,6 +46,21 @@ public class SecretsNamespaceHandlerExtension
     public static final String ELEMENT_SECRET_ID = "secret-id";
 
     /**
+     * The name of the element containing the name of a secret.
+     */
+    public static final String ELEMENT_SECRET_NAME = "secret-name";
+
+    /**
+     * The name of the element containing the {@link com.oracle.bmc.secrets.SecretsClient} builder.
+     */
+    public static final String ELEMENT_SECRETS_CLIENT = "secrets-client";
+
+    /**
+     * The name of the element containing the {@link com.oracle.bmc.vault.VaultsClient} builder.
+     */
+    public static final String ELEMENT_VAULTS_CLIENT = "vaults-client";
+
+    /**
      * The name of the XML element containing the {@link com.oracle.coherence.oci.secret.util.SecretsPasswordProvider} configuration.
      */
     public static final String ELEMENT_PWD_PROVIDER = "secrets-password-provider";
@@ -55,20 +68,15 @@ public class SecretsNamespaceHandlerExtension
     /**
      * The name of the Secrets private key loader element.
      */
-    public static final String ELEMENT_KEY_LOADER = "secrets-key-loader";
+    public static final String ELEMENT_KEY_LOADER = "secrets-key";
 
     /**
      * The name of the Secrets private cert loader element.
      */
-    public static final String ELEMENT_CERT_LOADER = "secrets-cert-loader";
-
-    /**
-     * The name of the Secrets private CA cert loader element.
-     */
-    public static final String ELEMENT_CA_CERT_LOADER = "secrets-ca-cert-loader";
+    public static final String ELEMENT_CERT_LOADER = "secrets-cert";
 
     /**
      * The name of the Secrets private KeyStore loader element.
      */
-    public static final String ELEMENT_KEY_STORE_LOADER = "secrets-key-store-loader";
+    public static final String ELEMENT_KEY_STORE_LOADER = "secrets-key-store";
     }

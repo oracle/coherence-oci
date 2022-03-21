@@ -7,7 +7,7 @@
 
 package com.oracle.coherence.oci.config;
 
-import com.tangosol.coherence.config.xml.processor.PasswordProviderBuilderProcessor;
+import com.tangosol.coherence.config.xml.processor.InstanceProcessor;
 
 import com.tangosol.config.xml.AbstractNamespaceHandler;
 
@@ -18,17 +18,18 @@ import java.util.ServiceLoader;
  * Coherence OCI extensions.
  *
  * @author Jonathan Knight  2022.01.25
- * @since 22.06
  */
 public class OCINamespaceHandler
         extends AbstractNamespaceHandler
     {
     // ----- constructors ---------------------------------------------------
 
+    /**
+     * Construct and configure an OCI namespace handler.
+     */
     public OCINamespaceHandler()
         {
-        registerProcessor(AuthenticationProcessor.class);
-
+        registerProcessor(ELEMENT_AUTHENTICATION, new InstanceProcessor());
         registerProcessor(ELEMENT_OCI_CONFIG_FILE, new SimpleBuilderProcessor<>(AuthenticationBuilder::new));
 
         ServiceLoader<NamespaceHandlerExtension> serviceLoader = ServiceLoader.load(NamespaceHandlerExtension.class);
@@ -40,7 +41,18 @@ public class OCINamespaceHandler
 
     // ----- constants ------------------------------------------------------
 
+    /**
+     * The name of the XML element containing a custom OCI authentication configuration.
+     */
     public static final String ELEMENT_AUTHENTICATION = "authentication";
 
+    /**
+     * The name of the XML element containing a custom OCI compartment OCID.
+     */
+    public static final String ELEMENT_COMPARTMENT = "compartment-id";
+
+    /**
+     * The name of the XML element containing a custom OCI configuration file.
+     */
     public static final String ELEMENT_OCI_CONFIG_FILE = "oci-config-file";
     }

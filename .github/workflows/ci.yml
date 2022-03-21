@@ -1,0 +1,80 @@
+# Copyright 2019, 2022, Oracle Corporation and/or its affiliates.  All rights reserved.
+# Licensed under the Universal Permissive License v 1.0 as shown at
+# http://oss.oracle.com/licenses/upl.
+
+# ---------------------------------------------------------------------------
+# Coherence Operator GitHub Actions CI build.
+# ---------------------------------------------------------------------------
+name: Operator CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore:
+    - gh-pages
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - committed
+    branches-ignore:
+    - gh-pages
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+#   Checkout the source, we need a depth of zero to fetch all the history otherwise
+#   the copyright check cannot work out the date of the files from Git.
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+#   This step will free up disc space on the runner by removing
+#   lots of things that we do not need.
+    - name: disc
+      shell: bash
+      run: |
+        echo "Listing 100 largest packages"
+        dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
+        df -h
+        echo "Removing large packages"
+        sudo apt-get remove -y '^dotnet-.*'
+        sudo apt-get remove -y '^llvm-.*'
+        sudo apt-get remove -y 'monodoc-http'
+        sudo apt-get remove -y 'php.*'
+        sudo apt-get remove -y azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell mono-devel
+        sudo apt-get autoremove -y
+        sudo apt-get clean
+        df -h
+        echo "Removing large directories"
+        rm -rf /usr/share/dotnet/
+        df -h
+
+    - name: Set up JDK
+      uses: actions/setup-java@v1
+      with:
+        java-version: '11'
+
+    - name: Cache Maven packages
+      uses: actions/cache@v1
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+
+    - name: Edit DNS Resolve
+      shell: bash
+      run: |
+        sudo chown -R runner:runner /run/systemd/resolve/stub-resolv.conf
+        sudo echo nameserver 8.8.8.8 > /run/systemd/resolve/stub-resolv.conf
+
+    - name: Build
+      run: mvn --batch-mode -e clean install --file pom.xml
+
+    - uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: test-output
+        path: build/_output/test-logs

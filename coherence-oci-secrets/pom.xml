@@ -11,21 +11,27 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.oracle.coherence</groupId>
+    <groupId>com.oracle.coherence.oci</groupId>
     <artifactId>coherence-oci-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>coherence-oci-secrets</artifactId>
+  <description>Coherence OCI Secrets Integrations</description>
 
   <dependencies>
     <dependency>
-      <groupId>com.oracle.coherence</groupId>
+      <groupId>${coherence.group.id}</groupId>
+      <artifactId>coherence</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.oracle.coherence.oci</groupId>
       <artifactId>coherence-oci</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.oracle.coherence</groupId>
+      <groupId>com.oracle.coherence.oci</groupId>
       <artifactId>coherence-oci</artifactId>
       <version>${project.version}</version>
       <type>test-jar</type>
@@ -35,6 +41,10 @@
     <dependency>
       <groupId>com.oracle.oci.sdk</groupId>
       <artifactId>oci-java-sdk-secrets</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.oracle.oci.sdk</groupId>
+      <artifactId>oci-java-sdk-vault</artifactId>
     </dependency>
 
     <dependency>
@@ -63,6 +73,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>com.oracle.bedrock.coherence</groupId>
+      <artifactId>coherence-21.06-testing-support</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
       <scope>test</scope>
@@ -71,6 +86,18 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>com.oracle.coherence.oci.secrets</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>

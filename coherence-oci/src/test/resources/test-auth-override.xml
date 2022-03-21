@@ -14,39 +14,27 @@
   <cluster-config>
     <resources>
       <resource id="default-auth">
-        <oci:authentication>
-          <oci:oci-config-file/>
-        </oci:authentication>
+        <oci:oci-config-file/>
       </resource>
       <resource id="auth-one">
-        <oci:authentication>
-          <oci:oci-config-file>
-            <oci:file-name>/oci/my-config-one</oci:file-name>
-            <oci:profile-name>testing-one</oci:profile-name>
-          </oci:oci-config-file>
-        </oci:authentication>
+        <oci:oci-config-file>
+          <oci:file-name>/oci/my-config-one</oci:file-name>
+          <oci:profile-name>testing-one</oci:profile-name>
+        </oci:oci-config-file>
       </resource>
       <resource id="auth-two">
-        <oci:authentication>
-          <oci:oci-config-file>
-            <oci:file-name>/oci/my-config-two</oci:file-name>
-          </oci:oci-config-file>
-        </oci:authentication>
+        <oci:oci-config-file>
+          <oci:file-name>/oci/my-config-two</oci:file-name>
+        </oci:oci-config-file>
       </resource>
       <resource id="auth-three">
-        <oci:authentication>
-          <oci:oci-config-file>
-            <oci:profile-name>testing-three</oci:profile-name>
-          </oci:oci-config-file>
-        </oci:authentication>
+        <oci:oci-config-file>
+          <oci:profile-name>testing-three</oci:profile-name>
+        </oci:oci-config-file>
       </resource>
       <resource id="auth-four">
-        <oci:authentication>
-          <instance>
-            <class-factory-name>com.oracle.coherence.oci.config.CustomAuthFactory</class-factory-name>
-            <method-name>build</method-name>
-          </instance>
-        </oci:authentication>
+          <class-factory-name>com.oracle.coherence.oci.config.CustomAuthFactory</class-factory-name>
+          <method-name>build</method-name>
       </resource>
     </resources>
   </cluster-config>

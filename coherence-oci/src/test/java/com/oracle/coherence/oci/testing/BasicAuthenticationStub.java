@@ -8,6 +8,7 @@
 package com.oracle.coherence.oci.testing;
 
 import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider;
+
 import com.oracle.coherence.common.base.Exceptions;
 
 import java.io.File;
@@ -19,7 +20,6 @@ import java.io.InputStream;
  * A mock {@link BasicAuthenticationDetailsProvider}.
  *
  * @author Jonathan Knight  2022.01.25
- * @since 22.06
  */
 public class BasicAuthenticationStub
         implements BasicAuthenticationDetailsProvider
@@ -29,11 +29,24 @@ public class BasicAuthenticationStub
     /**
      * Create a {@link BasicAuthenticationStub}.
      *
+     * @param sId    an identifier for this stub
+     * @param sFile  the file containing the PEM encoded key
+     */
+    public BasicAuthenticationStub(String sId, String sFile)
+        {
+        this(sId, new File(sFile), null);
+        }
+
+    /**
+     * Create a {@link BasicAuthenticationStub}.
+     *
+     * @param sId       an identifier for this stub
      * @param file      the {@link File} containing the PEM encoded key
      * @param sKeyPass  the optional private key pass phrase
      */
-    public BasicAuthenticationStub(File file, String sKeyPass)
+    public BasicAuthenticationStub(String sId, File file, String sKeyPass)
         {
+        f_sId       = sId;
         f_filePEM   = file;
         f_acKeyPass = sKeyPass == null ? new char[0] : sKeyPass.toCharArray();
         }
@@ -43,7 +56,7 @@ public class BasicAuthenticationStub
     @Override
     public String getKeyId()
         {
-        return "Test";
+        return f_sId;
         }
 
     @Override
@@ -78,6 +91,11 @@ public class BasicAuthenticationStub
     public static final String PROP_PASS_PHRASE = "test.oci.auth.pass";
 
     // ----- data members ---------------------------------------------------
+
+    /**
+     * The identifier for this stub.
+     */
+    private final String f_sId;
 
     /**
      * The {@link File} containing the PEM encoded key.

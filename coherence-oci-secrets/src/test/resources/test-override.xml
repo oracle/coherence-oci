@@ -16,14 +16,7 @@
       <socket-provider id="test">
         <ssl>
           <trust-manager>
-            <key-store>
-              <ca-cert>test-ca.cert</ca-cert>
-              <key-store-resolver>
-                <cert-loader>
-                  <oci:secrets-cert-loader/>
-                </cert-loader>
-              </key-store-resolver>
-            </key-store>
+            <oci:secrets-cert>ocid1.vaultsecret.oc1.uk-london-1.ambbcdaan7oqdzaascbykhgduwmr4mr4ml3ver6yq62secretfakeicqb3na</oci:secrets-cert>
           </trust-manager>
         </ssl>
       </socket-provider>
@@ -32,9 +25,23 @@
     <password-providers>
       <password-provider id="test-pass">
         <oci:secrets-password-provider>
-          <oci:secret-id>foo</oci:secret-id>
+          <oci:secret-name>foo</oci:secret-name>
+          <oci:compartment-id system-property="test.compartment.ocid"/>
           <oci:secrets-client>
-            <instance>
+            <class-name>com.oracle.coherence.oci.secret.testing.SecretsClientStub</class-name>
+            <init-params>
+              <init-param>
+                <param-type>string</param-type>
+                <param-value system-property="test.oci.auth.file"/>
+              </init-param>
+            </init-params>
+          </oci:secrets-client>
+        </oci:secrets-password-provider>
+      </password-provider>
+      <password-provider id="test-no-pass">
+        <oci:secrets-password-provider>
+          <oci:secret-id/>
+          <oci:secrets-client>
               <class-name>com.oracle.coherence.oci.secret.testing.SecretsClientStub</class-name>
               <init-params>
                 <init-param>
@@ -42,11 +49,52 @@
                   <param-value system-property="test.oci.auth.file"/>
                 </init-param>
               </init-params>
-            </instance>
           </oci:secrets-client>
+        </oci:secrets-password-provider>
+      </password-provider>
+      <password-provider id="test-with-auth">
+        <oci:secrets-password-provider>
+          <oci:secret-id system-property="test.secret.ocid"/>
+          <oci:authentication>
+              <resource>oci-custom-authentication</resource>
+          </oci:authentication>
         </oci:secrets-password-provider>
       </password-provider>
     </password-providers>
 
+    <resources>
+      <resource id="cl">
+        <oci:secrets-client>
+          <oci:file-name/>
+          <oci:profile-name/>
+        </oci:secrets-client>
+      </resource>
+      <resource id="oci-custom-authentication">
+        <class-name>com.oracle.coherence.oci.testing.BasicAuthenticationStub</class-name>
+        <init-params>
+          <init-param>
+            <param-type>string</param-type>
+            <param-value>oci-custom-authentication</param-value>
+          </init-param>
+          <init-param>
+            <param-type>string</param-type>
+            <param-value system-property="test.oci.auth.file"/>
+          </init-param>
+        </init-params>
+      </resource>
+      <resource id="oci-authentication">
+        <class-name>com.oracle.coherence.oci.testing.BasicAuthenticationStub</class-name>
+        <init-params>
+          <init-param>
+            <param-type>string</param-type>
+            <param-value>oci-authentication</param-value>
+          </init-param>
+          <init-param>
+            <param-type>string</param-type>
+            <param-value system-property="test.oci.auth.file"/>
+          </init-param>
+        </init-params>
+      </resource>
+    </resources>
   </cluster-config>
 </coherence>

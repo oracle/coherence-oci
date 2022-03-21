@@ -13,7 +13,6 @@ import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
  * A stub {@link AbstractAuthenticationDetailsProvider} factory.
  *
  * @author Jonathan Knight  2022.01.25
- * @since 22.06
  */
 public class CustomAuthFactory
     {

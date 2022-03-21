@@ -10,22 +10,75 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.oracle.coherence</groupId>
+  <groupId>com.oracle.coherence.oci</groupId>
   <artifactId>coherence-oci-parent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
+  <description>
+ 		The Oracle Coherence OCI project provides support for integrating Coherence
+    with various Oracle Cloud Infrastructure (OCI) services.
+ 	</description>
+
+ 	<url>https://github.com/coherence-community/coherence-oci</url>
+
+ 	<issueManagement>
+ 		<system>GitHub</system>
+ 		<url>https://github.com/coherence-community/coherence-oci/issues</url>
+ 	</issueManagement>
+
+ 	<organization>
+ 		<name>Oracle, Inc</name>
+ 		<url>https://www.oracle.com/</url>
+ 	</organization>
+
+ 	<licenses>
+ 		<license>
+ 			<name>The Universal Permissive License (UPL), Version 1.0</name>
+ 			<url>https://oss.oracle.com/licenses/upl</url>
+ 			<distribution>repo</distribution>
+ 		</license>
+ 	</licenses>
+
+  <developers>
+ 		<developer>
+ 			<name>Jonathan Knight</name>
+ 			<organization>Oracle Corporation</organization>
+ 		</developer>
+ 	</developers>
+
+  <scm>
+ 		<connection>scm:git:https://github.com/oracle/coherence-oci.git</connection>
+ 		<developerConnection>scm:git:https://github.com/oracle/coherence-oci.git</developerConnection>
+ 		<url>https://github.com/oracle/coherence-oci</url>
+ 		<tag>HEAD</tag>
+ 	</scm>
+  
   <modules>
     <module>coherence-oci</module>
     <module>coherence-oci-secrets</module>
+    
+    <module>docs</module>
   </modules>
 
   <properties>
+    <maven.minimum.version>3.6.0</maven.minimum.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <java.version.enforcer>11</java.version.enforcer>
+    <java.version>11</java.version>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
 
+    <coherence.oci.root>${basedir}</coherence.oci.root>
+
+    <skip-sign-artifacts>true</skip-sign-artifacts>
+
     <coherence.group.id>com.oracle.coherence</coherence.group.id>
+
+    <!-- library dependency versions (alphabetically) -->
+    <version.lib.asciidoctorj-pdf>1.5.4</version.lib.asciidoctorj-pdf>
     <version.lib.bedrock>5.1.3</version.lib.bedrock>
     <version.lib.coherence>14.1.2-0-0-SNAPSHOT</version.lib.coherence>
     <version.lib.hamcrest>2.2</version.lib.hamcrest>
@@ -34,10 +87,67 @@
     <version.lib.oci>2.12.0</version.lib.oci>
     <version.lib.slf4j>1.7.32</version.lib.slf4j>
 
+    <!-- plugin dependency versions -->
+    <version.plugin.asciidoctorj>1.6.0</version.plugin.asciidoctorj>
+    <version.plugin.glassfish.copyright>2.1</version.plugin.glassfish.copyright>
+    <version.plugin.maven-compiler>3.8.1</version.plugin.maven-compiler>
+    <version.plugin.maven-deploy>2.8.2</version.plugin.maven-deploy>
     <version.plugin.maven.failsafe>3.0.0-M5</version.plugin.maven.failsafe>
     <version.plugin.maven.jar>3.2.0</version.plugin.maven.jar>
+    <version.plugin.maven-resources>3.2.0</version.plugin.maven-resources>
     <version.plugin.maven.surefire>3.0.0-M5</version.plugin.maven.surefire>
+
+    <doxia-module-markdown.version>1.0</doxia-module-markdown.version>
+    <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
+    <flatten-maven-plugin.version>1.2.7</flatten-maven-plugin.version>
+    <github.site-maven-plugin.version>0.12</github.site-maven-plugin.version>
+    <dependency-check-maven.version>6.5.3</dependency-check-maven.version>
+    <maven-directory-plugin.version>0.1</maven-directory-plugin.version>
+    <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
+    <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+    <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
+    <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
+    <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
+    <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+    <maven-site-plugin.version>3.9.1</maven-site-plugin.version>
+    <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+    <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+    <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
   </properties>
+
+  <distributionManagement>
+ 		<snapshotRepository>
+ 			<id>sonatype</id>
+ 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+ 		</snapshotRepository>
+ 		<repository>
+ 			<id>sonatype</id>
+ 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+ 		</repository>
+ 	</distributionManagement>
+
+ 	<repositories>
+ 		<repository>
+ 			<id>central</id>
+ 			<url>https://repo1.maven.org/maven2/</url>
+ 			<releases>
+ 				<enabled>true</enabled>
+ 			</releases>
+ 			<snapshots>
+ 				<enabled>false</enabled>
+ 			</snapshots>
+ 		</repository>
+ 		<repository>
+ 			<id>snapshots-repo</id>
+ 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+ 			<releases>
+ 				<enabled>false</enabled>
+ 			</releases>
+ 			<snapshots>
+ 				<enabled>true</enabled>
+ 			</snapshots>
+ 		</repository>
+ 	</repositories>
 
   <dependencyManagement>
      <dependencies>
@@ -82,6 +192,11 @@
          <artifactId>bedrock-testing-support</artifactId>
          <version>${version.lib.bedrock}</version>
        </dependency>
+       <dependency>
+         <groupId>com.oracle.bedrock.coherence</groupId>
+         <artifactId>coherence-21.06-testing-support</artifactId>
+         <version>${version.lib.bedrock}</version>
+       </dependency>
 
        <dependency>
          <groupId>org.slf4j</groupId>
@@ -94,6 +209,18 @@
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>${maven-enforcer-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>flatten-maven-plugin</artifactId>
+          <version>${flatten-maven-plugin.version}</version>
+        </plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
@@ -119,7 +246,370 @@
             </execution>
           </executions>
         </plugin>
+
+        <plugin>
+            <groupId>org.commonjava.maven.plugins</groupId>
+            <artifactId>directory-maven-plugin</artifactId>
+            <version>${maven-directory-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>${maven-gpg-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${version.plugin.maven-resources}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${maven-source-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${maven-javadoc-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>${maven-install-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${version.plugin.maven-compiler}</version>
+          <configuration>
+            <source>${java.version}</source>
+            <target>${java.version}</target>
+            <testCompilerArgument>-parameters</testCompilerArgument>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${version.plugin.maven-deploy}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>${maven-release-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.sonatype.plugins</groupId>
+          <artifactId>nexus-staging-maven-plugin</artifactId>
+          <version>${nexus-staging-maven-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.asciidoctor</groupId>
+          <artifactId>asciidoctor-maven-plugin</artifactId>
+          <version>${version.plugin.asciidoctorj}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.asciidoctor</groupId>
+              <artifactId>asciidoctorj-pdf</artifactId>
+              <version>${version.lib.asciidoctorj-pdf}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>${dependency-check-maven.version}</version>
+        </plugin>
+
+        <plugin>
+            <groupId>org.glassfish.copyright</groupId>
+            <artifactId>glassfish-copyright-maven-plugin</artifactId>
+            <version>${version.plugin.glassfish.copyright}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-plugin-versions</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>${maven.minimum.version}</version>
+                </requireMavenVersion>
+                <requireJavaVersion>
+                  <version>${java.version.enforcer}</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/*Test.java</include>
+            <include>**/*Tests.java</include>
+          </includes>
+          <useSystemClassLoader>true</useSystemClassLoader>
+          <useManifestOnlyJar>false</useManifestOnlyJar>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-license</id>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <phase>process-sources</phase>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${coherence.oci.root}</directory>
+                  <targetPath>META-INF/</targetPath>
+                  <filtering>true</filtering>
+                  <includes>
+                    <include>LICENSE.txt</include>
+                    <include>THIRD_PARTY_LICENSES.txt</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <source>${java.version}</source>
+          <failOnError>false</failOnError>
+        </configuration>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <inherited>true</inherited>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+          <groupId>org.commonjava.maven.plugins</groupId>
+          <artifactId>directory-maven-plugin</artifactId>
+          <executions>
+              <execution>
+                  <id>generate-top-parent-basedir</id>
+                  <goals>
+                      <goal>highest-basedir</goal>
+                  </goals>
+                  <phase>validate</phase>
+                  <configuration>
+                      <property>top.parent.basedir</property>
+                  </configuration>
+              </execution>
+          </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <serverId>sonatype</serverId>
+          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+          <autoReleaseAfterClose>false</autoReleaseAfterClose>
+          <skipLocalStaging>true</skipLocalStaging>
+          <stagingProgressTimeoutMinutes>20</stagingProgressTimeoutMinutes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <inherited>true</inherited>
+        <executions>
+          <execution>
+            <id>flatten</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+            <configuration>
+              <updatePomFile>true</updatePomFile>
+              <flattenMode>oss</flattenMode>
+              <pomElements>
+                <parent>expand</parent>
+                <distributionManagement>remove</distributionManagement>
+                <repositories>remove</repositories>
+                <profiles>remove</profiles>
+              </pomElements>
+            </configuration>
+          </execution>
+          <execution>
+            <id>flatten.clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <useReleaseProfile>false</useReleaseProfile>
+          <releaseProfiles>release</releaseProfiles>
+          <goals>deploy</goals>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <configuration>
+          <skip>${skip-sign-artifacts}</skip>
+        </configuration>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+            <configuration>
+              <gpgArguments>
+                <arg>--pinentry-mode</arg>
+                <arg>loopback</arg>
+              </gpgArguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
+
+  <profiles>
+ 		<profile>
+ 			<id>jdk9+</id>
+ 			<activation>
+ 				<jdk>[9,)</jdk>
+ 			</activation>
+ 			<properties>
+ 				<maven.compiler.release>${java.version}</maven.compiler.release>
+ 			</properties>
+ 		</profile>
+
+ 		<profile>
+ 			<id>owasp</id>
+ 			<build>
+ 				<plugins>
+ 					<plugin>
+ 						<groupId>org.owasp</groupId>
+ 						<artifactId>dependency-check-maven</artifactId>
+ 						<inherited>false</inherited>
+ 						<configuration>
+ 							<failBuildOnCVSS>7</failBuildOnCVSS>
+ 							<skipProvidedScope>true</skipProvidedScope>
+ 							<skipRuntimeScope>true</skipRuntimeScope>
+ 							<skipTestScope>true</skipTestScope>
+ 							<suppressionFiles>
+ 								<suppressionFile>${coherence.oci.root}/src/main/config/dependency-check-suppression.xml</suppressionFile>
+ 							</suppressionFiles>
+ 						</configuration>
+ 						<executions>
+ 							<execution>
+ 								<goals>
+ 									<goal>aggregate</goal>
+ 								</goals>
+ 							</execution>
+ 						</executions>
+ 					</plugin>
+ 				</plugins>
+ 			</build>
+ 		</profile>
+
+ 		<profile>
+ 			<id>staging</id>
+ 			<repositories>
+ 				<repository>
+ 					<id>sonatype-staging</id>
+ 					<url>https://oss.sonatype.org/content/groups/staging/</url>
+ 					<releases>
+ 						<enabled>true</enabled>
+ 					</releases>
+ 					<snapshots>
+ 						<enabled>false</enabled>
+ 					</snapshots>
+ 				</repository>
+ 			</repositories>
+ 		</profile>
+ 	</profiles>
 </project>

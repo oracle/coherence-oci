@@ -11,7 +11,6 @@ package com.oracle.coherence.oci.config;
  * A class that can add extensions to an {@link OCINamespaceHandler}.
  *
  * @author Jonathan Knight  2022.01.25
- * @since 22.06
  */
 public interface NamespaceHandlerExtension
     {
