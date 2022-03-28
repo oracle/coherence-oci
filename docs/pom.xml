@@ -25,9 +25,9 @@
 
 	<properties>
 		<coherence.oci.root>${basedir}/..</coherence.oci.root>
-		<helidon.sitegen.version>2.0.0-RC1</helidon.sitegen.version>
-		<asciidoctor.diagram.version>2.0.2</asciidoctor.diagram.version>
-		<doxia.version>1.6</doxia.version>
+		<helidon.sitegen.version>2.3.3</helidon.sitegen.version>
+		<asciidoctor.diagram.version>2.2.1</asciidoctor.diagram.version>
+		<doxia.version>1.9.1</doxia.version>
 
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
