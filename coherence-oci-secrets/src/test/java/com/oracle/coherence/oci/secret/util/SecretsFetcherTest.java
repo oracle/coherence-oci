@@ -7,6 +7,7 @@
 
 package com.oracle.coherence.oci.secret.util;
 
+import com.oracle.bmc.vault.VaultsClient;
 import com.oracle.coherence.oci.secret.AbstractSecretsTest;
 
 import com.oracle.coherence.oci.secret.testing.SecretsClientStub;
@@ -21,6 +22,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 
 public class SecretsFetcherTest
         extends AbstractSecretsTest
@@ -31,7 +33,7 @@ public class SecretsFetcherTest
         SecretsClientStub client = new SecretsClientStub(s_clientKeyCertPair.m_fileKeyPEMNoPass);
         client.addSecret("foo", "foo-secret");
 
-        SecretsFetcher fetcher = new SecretsFetcher(client, null);
+        SecretsFetcher fetcher = new SecretsFetcher(client, mock(VaultsClient.class));
         byte[]         abData  = fetcher.get("foo");
 
         assertThat(abData, is("foo-secret".getBytes(StandardCharsets.UTF_8)));
@@ -41,7 +43,7 @@ public class SecretsFetcherTest
     public void shouldFailToFetchSecret()
         {
         SecretsClientStub client  = new SecretsClientStub(s_clientKeyCertPair.m_fileKeyPEMNoPass);
-        SecretsFetcher    fetcher = new SecretsFetcher(client, null);
+        SecretsFetcher    fetcher = new SecretsFetcher(client, mock(VaultsClient.class));
 
         assertThrows(IllegalArgumentException.class, () -> fetcher.get("foo"));
         }

@@ -156,7 +156,12 @@ public abstract class BaseSecretsBuilder<T>
      */
     protected AbstractAuthenticationDetailsProvider realizeAuthentication(ParameterResolver resolver, ClassLoader loader, ParameterList parameterList)
         {
-        return m_authBuilder.realize(resolver, loader, parameterList);
+        ParameterizedBuilder<AbstractAuthenticationDetailsProvider> builder = m_authBuilder;
+        if (builder == null)
+            {
+            builder = AuthenticationBuilder.INSTANCE;
+            }
+        return builder.realize(resolver, loader, parameterList);
         }
 
     /**
@@ -210,7 +215,7 @@ public abstract class BaseSecretsBuilder<T>
     /**
      * The {@link AbstractAuthenticationDetailsProvider} builder.
      */
-    private ParameterizedBuilder<AbstractAuthenticationDetailsProvider> m_authBuilder = AuthenticationBuilder.INSTANCE;
+    private ParameterizedBuilder<AbstractAuthenticationDetailsProvider> m_authBuilder;
 
     /**
      * The Secret identifier.
