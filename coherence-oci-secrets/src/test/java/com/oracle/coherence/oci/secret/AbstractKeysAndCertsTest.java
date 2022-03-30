@@ -5,11 +5,13 @@
  * https://oss.oracle.com/licenses/upl.
  */
 
-package com.oracle.coherence.oci;
+package com.oracle.coherence.oci.secret;
 
+import com.oracle.bedrock.testsupport.MavenProjectFileUtils;
 import com.oracle.coherence.oci.testing.KeyTool;
 import org.junit.jupiter.api.BeforeAll;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -23,10 +25,13 @@ public class AbstractKeysAndCertsTest
     static void _createKeysAndCerts() throws IOException
         {
         KeyTool.assertCanCreateKeys();
-        s_clientCaCert      = KeyTool.createCACert("client", "JKS");
-        s_clientKeyCertPair = KeyTool.createKeyCertPair(s_clientCaCert, "client");
-        s_serverCaCert      = KeyTool.createCACert("server", "JKS");
-        s_serverKeyCertPair = KeyTool.createKeyCertPair(s_serverCaCert, "server");
+
+        File fileBuild = MavenProjectFileUtils.locateBuildFolder(AbstractKeysAndCertsTest.class);
+
+        s_clientCaCert      = KeyTool.createCACert(fileBuild,"client", "JKS");
+        s_clientKeyCertPair = KeyTool.createKeyCertPair(fileBuild, s_clientCaCert, "client");
+        s_serverCaCert      = KeyTool.createCACert(fileBuild, "server", "JKS");
+        s_serverKeyCertPair = KeyTool.createKeyCertPair(fileBuild, s_serverCaCert, "server");
         }
 
     // ----- data members ---------------------------------------------------

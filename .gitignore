@@ -28,6 +28,4 @@ dependency-reduced-pom.xml
 !.ignore
 !.github
 !.gitignore
-!prj/.mvn
-!prj/.mvn/**
 

@@ -7,13 +7,7 @@
 
 package com.oracle.coherence.oci.secret;
 
-import com.oracle.coherence.oci.AbstractKeysAndCertsTest;
-
 import com.oracle.coherence.oci.secret.testing.SecretsClientStub;
-
-import com.oracle.coherence.oci.secret.util.SecretsFetcherTest;
-
-import com.oracle.coherence.oci.testing.BasicAuthenticationStub;
 
 import org.junit.jupiter.api.BeforeAll;
 

@@ -24,6 +24,7 @@ import com.oracle.bedrock.runtime.java.options.ClassName;
 import com.oracle.bedrock.runtime.java.options.SystemProperty;
 import com.oracle.bedrock.runtime.options.DisplayName;
 import com.oracle.bedrock.runtime.options.StabilityPredicate;
+import com.oracle.bedrock.testsupport.MavenProjectFileUtils;
 import com.oracle.bedrock.testsupport.deferred.Eventually;
 import com.oracle.bedrock.testsupport.junit.TestLogsExtension;
 import com.oracle.bmc.ConfigFileReader;
@@ -181,10 +182,13 @@ public class SecretsIT
     protected static void ensureKeys() throws Exception
         {
         KeyTool.assertCanCreateKeys();
-        s_clientCaCert      = KeyTool.createCACert("client", "JKS");
-        s_clientKeyCertPair = KeyTool.createKeyCertPair(s_clientCaCert, "client");
-        s_serverCaCert      = KeyTool.createCACert("server", "JKS");
-        s_serverKeyCertPair = KeyTool.createKeyCertPair(s_serverCaCert, "server");
+
+        File fileBuild = MavenProjectFileUtils.locateBuildFolder(SecretsIT.class);
+
+        s_clientCaCert      = KeyTool.createCACert(fileBuild, "client", "JKS");
+        s_clientKeyCertPair = KeyTool.createKeyCertPair(fileBuild, s_clientCaCert, "client");
+        s_serverCaCert      = KeyTool.createCACert(fileBuild, "server", "JKS");
+        s_serverKeyCertPair = KeyTool.createKeyCertPair(fileBuild, s_serverCaCert, "server");
         }
 
     protected static void loadSecrets(SecretsUtils secretsUtils, OptionsByType options)
