@@ -57,6 +57,7 @@ public class KeyTool
     /**
      * Create a CA certificate.
      *
+     * @param fileBuild   the target build directory under which the certificates will be created
      * @param sName       the name to use for the cert, which must also be valid for use as a cert CN
      * @param sStoreType  they type of the keystore, e,g, JKS, or PKCS12
      *
@@ -64,9 +65,8 @@ public class KeyTool
      *
      * @throws IOException if cert generation fails
      */
-    public static KeyAndCert createCACert(String sName, String sStoreType) throws IOException
+    public static KeyAndCert createCACert(File fileBuild, String sName, String sStoreType) throws IOException
         {
-        File   fileBuild    = MavenProjectFileUtils.locateBuildFolder(KeyTool.class);
         File   fileClasses  = new File(fileBuild, "test-classes");
         File   fileCerts    = new File(fileClasses, "certs");
         File   fileKey      = new File(fileCerts, sName + "-ca.key");
@@ -105,6 +105,7 @@ public class KeyTool
     /**
      * Create a private key and certificate pair in different formats.
      *
+     * @param fileBuild     the target build directory under which the certificates will be created
      * @param keyAndCertCA  the previously created CA cert to use to sign the key and cert
      * @param sName         the name to use for the key and cert, which must also be valid for use as a cert CN
      *
@@ -112,9 +113,8 @@ public class KeyTool
      *
      * @throws IOException if cert generation fails
      */
-    public static KeyAndCert createKeyCertPair(KeyAndCert keyAndCertCA, String sName) throws IOException
+    public static KeyAndCert createKeyCertPair(File fileBuild, KeyAndCert keyAndCertCA, String sName) throws IOException
         {
-        File  fileBuild     = MavenProjectFileUtils.locateBuildFolder(KeyTool.class);
         File  fileClasses   = new File(fileBuild, "test-classes");
         File  fileCerts     = new File(fileClasses, "certs");
         File  fileSign      = new File(fileCerts, sName + "-signing.key");
