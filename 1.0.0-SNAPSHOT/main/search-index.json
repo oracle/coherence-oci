@@ -1,0 +1,79 @@
+{
+    "docs": [
+        {
+            "location": "/docs/secrets/02_introduction",
+            "text": "",
+            "title": "Introduction"
+        },
+        {
+            "location": "/README",
+            "text": " This repository contains modules that integrate Oracle Coherence with Oracle Cloud Infrastructure ",
+            "title": "preambule"
+        },
+        {
+            "location": "/README",
+            "text": " The Coherence OCI modules require Coherence version 22.06 or later to run. ",
+            "title": "Coherence"
+        },
+        {
+            "location": "/README",
+            "text": " The Coherence OCI modules are compiled to Java 11 byte code so require Java 11, or later, to run. ",
+            "title": "Java"
+        },
+        {
+            "location": "/README",
+            "text": " Coherence The Coherence OCI modules require Coherence version 22.06 or later to run. Java The Coherence OCI modules are compiled to Java 11 byte code so require Java 11, or later, to run. ",
+            "title": "Prerequisites"
+        },
+        {
+            "location": "/README",
+            "text": " Use the OCI Secrets Service to store keys and certificates used to secure Coherence clusters with TLS. The keys and certificates are retrieved directly from the secrets service without requiring Java keystores on the Coherence process&#8217;s file system. See: The OCI Secrets module README file ",
+            "title": "OCI Secrets Service"
+        },
+        {
+            "location": "/README",
+            "text": " OCI Secrets Service Use the OCI Secrets Service to store keys and certificates used to secure Coherence clusters with TLS. The keys and certificates are retrieved directly from the secrets service without requiring Java keystores on the Coherence process&#8217;s file system. See: The OCI Secrets module README file ",
+            "title": "Available Integrations"
+        },
+        {
+            "location": "/README",
+            "text": " Note Developers choosing to distribute a binary implementation of this project are responsible for obtaining and providing all required licenses and copyright notices for the third-party code used in order to ensure compliance with their respective open source licenses. ",
+            "title": "Binary Distribution"
+        },
+        {
+            "location": "/coherence-oci-secrets/README",
+            "text": " This module provides integrations between Coherence and the OCI Secrets Service. To use the Coherence OCI Secrets module add the following dependency to your project. <markup lang=\"xml\" title=\"Maven pom.xml\" >&lt;dependency&gt; &lt;groupId&gt;com.oracle.coherence.ce&lt;/groupId&gt; &lt;artifactId&gt;coherence&lt;/artifactId&gt; &lt;version&gt;${coherenceVersion}&lt;/version&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;com.oracle.coherence&lt;/groupId&gt; &lt;artifactId&gt;coherence-oci-secrets&lt;/artifactId&gt; &lt;version&gt;${coherenceOciVersion}&lt;/version&gt; &lt;/dependency&gt; <markup title=\"Gradle build.gradle\" >implementation \"com.oracle.coherence.ce:coherence:${coherenceVersion}\" implementation \"com.oracle.coherence:coherence-oci-secrets:${coherenceOciVersion}\" Replacing ${coherenceVersion} with the version of Coherence being used and replacing ${coherenceOciVersion} with the version of the Coherence OCI module you are using. ",
+            "title": "OCI Secrets Service Integration"
+        },
+        {
+            "location": "/coherence-oci-secrets/README",
+            "text": " When adding OCI extensions to a Coherence cache configuration file or operational configuration override file, the custom OCI namespace needs to be added to the root element. In the cache configuration file, add the xmlns:oci=\"class://com.oracle.coherence.oci.config.OCINamespaceHandler\" namespace declaration and add the schema location class://com.oracle.coherence.oci.config.OCINamespaceHandler coherence-oci.xsd <markup lang=\"xml\" title=\"coherence-cache-config.xml\" >&lt;?xml version=\"1.0\"?&gt; &lt;cache-config xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://xmlns.oracle.com/coherence/coherence-cache-config\" xmlns:oci=\"class://com.oracle.coherence.oci.config.OCINamespaceHandler\" xsi:schemaLocation=\"http://xmlns.oracle.com/coherence/coherence-cache-config coherence-cache-config.xsd class://com.oracle.coherence.oci.config.OCINamespaceHandler coherence-oci.xsd\"&gt; &lt;/cache-config&gt; In the operational override configuration file, add the xmlns:oci=\"class://com.oracle.coherence.oci.config.OCINamespaceHandler\" namespace declaration and add the schema location class://com.oracle.coherence.oci.config.OCINamespaceHandler coherence-oci.xsd <markup lang=\"xml\" title=\"tangosol-coherence-override.xml\" >&lt;?xml version=\"1.0\"?&gt; &lt;coherence xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://xmlns.oracle.com/coherence/coherence-operational-config\" xmlns:oci=\"class://com.oracle.coherence.oci.config.OCINamespaceHandler\" xsi:schemaLocation=\"http://xmlns.oracle.com/coherence/coherence-operational-config coherence-operational-config.xsd class://com.oracle.coherence.oci.config.OCINamespaceHandler coherence-oci.xsd\"&gt; &lt;/coherence&gt; With the additional namespace added, OCI XML extensions can be added to the configuration files by prefixing the OCI XML elements with oci: ",
+            "title": "Enabling the OCI XML Configuration Namespace"
+        },
+        {
+            "location": "/coherence-oci-secrets/README",
+            "text": " Some Coherence configuration elements allow passwords to be specified using a custom PasswordProvider , for example when providing TLS key credentials. The Coherence OCI secrets service integrations provide a custom PasswordProvider that obtains a password from a secret. With the OCI namespace added as described above, a secret password provider can be used anywhere the Coherence XML expects a &lt;password-provider&gt; by using XML like the snippet shown below: <markup lang=\"xml\" >&lt;oci:secrets-password-provider&gt; &lt;oci:secret-id&gt;foo&lt;/oci:secret-id&gt; &lt;/oci:secrets-password-provider&gt; In the above example, the password will come from a secret with the id foo . For example, a password provider can be added to the operational override file. <markup lang=\"xml\" title=\"tangosol-coherence-override.xml\" >&lt;?xml version=\"1.0\"?&gt; &lt;coherence xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://xmlns.oracle.com/coherence/coherence-operational-config\" xmlns:oci=\"class://com.oracle.coherence.oci.config.OCINamespaceHandler\" xsi:schemaLocation=\"http://xmlns.oracle.com/coherence/coherence-operational-config coherence-operational-config.xsd class://com.oracle.coherence.oci.config.OCINamespaceHandler coherence-oci.xsd\"&gt; &lt;cluster-config&gt; &lt;password-providers&gt; &lt;password-provider id=\"test-pass\"&gt; &lt;oci:secrets-password-provider&gt; &lt;oci:secret-id&gt;foo&lt;/oci:secret-id&gt; &lt;/oci:secrets-password-provider&gt; &lt;/password-provider&gt; &lt;/password-providers&gt; &lt;/cluster-config&gt; &lt;/coherence&gt; ",
+            "title": "Configure An OCI Secrets PasswordProvider"
+        },
+        {
+            "location": "/coherence-oci-secrets/README",
+            "text": " Since Coherence version 22.06 configuring TLS has become much more flexible and extendable. Previously Coherence relied on Java KeysStore files to provide the keys and certs used to create an SSLContext . From version 22.06 support for direct use of key and certificate files was added, as well as the ability to configure custom key and certificate loaders, so that they were not tied to the file system. The Coherence OCI Secrets Service Integration extension adds custom key and certificate loaders that load data directly from secrets. If using password protected encrypted keys or keystores, these passwords can also be stored in secrets. ",
+            "title": "Configure Coherence TLS using OCI Secrets"
+        },
+        {
+            "location": "/docs/about/01_overview",
+            "text": " assistant Introduction Integrations with the OCI Vault and Secrets service, for example storing TLS keys and certs as secrets. ",
+            "title": "Overview"
+        },
+        {
+            "location": "/docs/about/01_overview",
+            "text": " visibility_off Vault & Secrets Integrations with the OCI Vault and Secrets service. For example, storing TLS keys and certs as secrets. ",
+            "title": "OCI Integrations"
+        },
+        {
+            "location": "/docs/about/02_introduction",
+            "text": "",
+            "title": "Introduction"
+        }
+ ]
+}
