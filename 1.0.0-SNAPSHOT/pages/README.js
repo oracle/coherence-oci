@@ -11,6 +11,11 @@
 <dd slot="desc"><p><img src="https://oracle.github.io/coherence/assets/images/logo-red.png" alt="Coherence CE" />
 </p>
 
+<p><img src="https://img.shields.io/github/workflow/status/oracle/coherence-oci/Coherence%20OCI%20CI" alt="GitHub CI Status" />
+
+<img src="https://img.shields.io/github/v/release/oracle/coherence-oci?sort=semver" alt="GitHub release (latest SemVer)" />
+</p>
+
 <p>This repository contains modules that integrate <a id="" title="" target="_blank" href="https://coherence.community/index.html">Oracle Coherence</a>
 with <a id="" title="" target="_blank" href="https://www.oracle.com/cloud/">Oracle Cloud Infrastructure</a></p>
 </dd>
