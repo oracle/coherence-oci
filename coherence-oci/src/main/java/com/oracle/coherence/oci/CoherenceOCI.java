@@ -9,23 +9,32 @@ package com.oracle.coherence.oci;
 
 /**
  * Common constants used by Coherence OCI integration.
+ *
+ * @author Jonathan Knight  2022.01.25
  */
-public interface CoherenceOCI
+public abstract class CoherenceOCI
     {
+    /**
+     * Private constructor for utilities class.
+     */
+    private CoherenceOCI()
+        {
+        }
+
     /**
      * The system property to override the OCI configuration file used by Coherence.
      */
-    String PROP_OCI_CONFIG_FILE = "coherence.oci.config.file";
+    public static String PROP_OCI_CONFIG_FILE = "coherence.oci.config.file";
 
     /**
      * The system property to override the OCI profile used by Coherence.
      */
-    String PROP_OCI_CONFIG_PROFILE = "coherence.oci.config.profile";
+    public static String PROP_OCI_CONFIG_PROFILE = "coherence.oci.config.profile";
 
     /**
      * The system property to override the OCI compartment used by Coherence.
      */
-    String PROP_OCI_COMPARTMENT = "coherence.oci.compartment";
+    public static String PROP_OCI_COMPARTMENT = "coherence.oci.compartment";
 
     /**
      * The default authentication builder resource name.
@@ -34,5 +43,5 @@ public interface CoherenceOCI
      * it will be used as the {@link com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider}
      * for all OCI integrations.
      */
-    String AUTHENTICATION_BUILDER = "oci-authentication";
+    public static String AUTHENTICATION_BUILDER = "oci-authentication";
     }

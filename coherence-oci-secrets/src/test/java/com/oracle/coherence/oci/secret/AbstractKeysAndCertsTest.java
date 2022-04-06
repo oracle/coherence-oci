@@ -19,7 +19,7 @@ import java.io.IOException;
  *
  * @author Jonathan Knight  2022.01.25
  */
-public class AbstractKeysAndCertsTest
+public abstract class AbstractKeysAndCertsTest
     {
     @BeforeAll
     static void _createKeysAndCerts() throws IOException

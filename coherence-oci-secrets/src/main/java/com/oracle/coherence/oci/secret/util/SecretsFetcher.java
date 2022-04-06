@@ -7,6 +7,7 @@
 
 package com.oracle.coherence.oci.secret.util;
 
+import com.oracle.bmc.OCID;
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 
 import com.oracle.bmc.secrets.SecretsClient;
@@ -29,6 +30,8 @@ import com.oracle.coherence.common.base.Logger;
 
 import com.oracle.coherence.oci.config.AuthenticationBuilder;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Base64;
 import java.util.List;
 
@@ -151,6 +154,42 @@ public class SecretsFetcher
         SecretSummary summary = listSummary.get(0);
 
         return get(summary.getId());
+        }
+
+    /**
+     * Fetch the specified secret.
+     *
+     * @param sSecret           the secret OCID or name
+     * @param sCompartmentOCID  an optional compartment OCID required if the {@code sSecret} parameter is a name
+     *
+     * @return the secret data as an {@link InputStream} or {@link null} if there is no secret data
+     */
+    public InputStream getSecret(String sSecret, String sCompartmentOCID)
+        {
+        byte[] abData;
+
+        if (OCID.isValid(sSecret))
+            {
+            abData = get(sSecret);
+            }
+        else
+            {
+            // sSecret is not an OCID, so assume it is a name
+            if (sCompartmentOCID == null || sCompartmentOCID.isEmpty())
+                {
+                throw new IllegalArgumentException("Secret id is not an OCID, "
+                        + "but no Compartment Id was set so it cannot be looked up as a secret name. "
+                        + "id=" + sSecret);
+                }
+            if (OCID.isValid(sCompartmentOCID))
+                {
+                throw new IllegalArgumentException("Secret id \"" + sSecret + "\" is not an OCID, "
+                        + "and the Compartment Id is also not a valid OCID \"" + sCompartmentOCID + "\"");
+                }
+            abData = get(sSecret, sCompartmentOCID);
+            }
+
+        return abData == null ? null : new ByteArrayInputStream(abData);
         }
 
     // ----- helper methods -------------------------------------------------

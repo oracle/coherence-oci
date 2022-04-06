@@ -131,9 +131,7 @@ public class AuthenticationBuilder
             }
         catch (IOException e)
             {
-            throw new ConfigurationException("Could not parse the default OCI configuration file "
-                    + FileUtils.expandUserHome("~/.oci/config"),
-                    "Ensure the OCI environment is correctly configured", e);
+            throw new ConfigurationException(String.format(ERROR_BAD_CONFIG, FileUtils.expandUserHome("~/.oci/config")), ERROR_ADVICE, e);
             }
         }
 
@@ -145,9 +143,7 @@ public class AuthenticationBuilder
             }
         catch (IOException e)
             {
-            throw new ConfigurationException("Could not parse the default OCI configuration file "
-                    + FileUtils.expandUserHome("~/.oci/config") + " using profile " + sProfileName,
-                    "Ensure the OCI environment is correctly configured", e);
+            throw new ConfigurationException(String.format(ERROR_BAD_CONFIG_AND_PROFILE, FileUtils.expandUserHome("~/.oci/config"), sProfileName), ERROR_ADVICE, e);
             }
         }
 
@@ -159,8 +155,7 @@ public class AuthenticationBuilder
             }
         catch (IOException e)
             {
-            throw new ConfigurationException("Could not parse the OCI configuration file " + sFileName,
-                    "Ensure the OCI environment is correctly configured", e);
+            throw new ConfigurationException(String.format(ERROR_BAD_CONFIG, sFileName), ERROR_ADVICE, e);
             }
         }
 
@@ -172,9 +167,7 @@ public class AuthenticationBuilder
             }
         catch (IOException e)
             {
-            throw new ConfigurationException("Could not parse the OCI configuration file "
-                    + sFileName + " using profile " + sProfileName,
-                    "Ensure the OCI environment is correctly configured", e);
+            throw new ConfigurationException(String.format(ERROR_BAD_CONFIG_AND_PROFILE, sFileName, sProfileName), ERROR_ADVICE, e);
             }
         }
 
@@ -189,6 +182,12 @@ public class AuthenticationBuilder
      * A singleton instance of the {@link AuthenticationBuilder}.
      */
     public static final AuthenticationBuilder INSTANCE = new AuthenticationBuilder();
+
+    private static final String ERROR_BAD_CONFIG = "Could not parse the OCI configuration file %s";
+
+    private static final String ERROR_BAD_CONFIG_AND_PROFILE = "Could not parse the OCI configuration file %s using profile %s";
+
+    private static final String ERROR_ADVICE = "Ensure the OCI environment is correctly configured";
 
     // ----- data members ---------------------------------------------------
 

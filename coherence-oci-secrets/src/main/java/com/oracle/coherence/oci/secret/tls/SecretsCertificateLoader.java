@@ -53,19 +53,7 @@ public class SecretsCertificateLoader
     protected InputStream getInputStream() throws IOException
         {
         Logger.finest("Loading certificate from " + this);
-
-        byte[] abData;
-
-        if (OCID.isValid(f_sSecret))
-            {
-            abData = f_fetcher.get(f_sSecret);
-            }
-        else
-            {
-            abData = f_fetcher.get(f_sSecret, f_sCompartmentOCID);
-            }
-
-        return abData == null ? null : new ByteArrayInputStream(abData);
+        return f_fetcher.getSecret(f_sSecret, f_sCompartmentOCID);
         }
 
     

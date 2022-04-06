@@ -41,26 +41,7 @@ public class SecretsPasswordProvider
     @Override
     protected InputStream getInputStream() throws IOException
         {
-        byte[] abData;
-        if (OCID.isValid(f_sSecretId))
-            {
-            // Id is an OCID so look it up directly
-            abData = f_fetcher.get(f_sSecretId);
-            }
-        else
-            {
-            // Id is not an OCID, so assume it is a name
-            if (f_sCompartmentId == null || f_sCompartmentId.isEmpty())
-                {
-                throw new IllegalStateException("Secret id is not an OCID, "
-                        + "but no Compartment Id was set so it cannot be looked up as a secret name. "
-                        + "id=" + f_sSecretId);
-                }
-
-            abData = f_fetcher.get(f_sSecretId, f_sCompartmentId);
-            }
-
-        return abData == null ? null : new ByteArrayInputStream(abData);
+        return f_fetcher.getSecret(f_sSecretId, f_sCompartmentId);
         }
 
     /**
