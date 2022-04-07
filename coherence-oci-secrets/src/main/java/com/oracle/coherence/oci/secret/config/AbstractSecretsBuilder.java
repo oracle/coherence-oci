@@ -50,7 +50,7 @@ public abstract class AbstractSecretsBuilder<T>
         String                                sSecretId      = getSecretId().evaluate(resolver);
         String                                sCompartmentId = getCompartmentId().evaluate(resolver);
 
-        if (!OCID.isValid(sSecretId))
+        if (sSecretId != null && !OCID.isValid(sSecretId))
             {
             if (sCompartmentId == null)
                 {

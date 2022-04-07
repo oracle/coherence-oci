@@ -7,17 +7,14 @@
 
 package com.oracle.coherence.oci.secret.tls;
 
-import com.oracle.bmc.OCID;
-
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 
 import com.oracle.coherence.common.base.Logger;
 
-import com.oracle.coherence.oci.secret.util.SecretsFetcher;
+import com.oracle.coherence.oci.secret.util.FixedSecretsFetcher;
 
 import com.tangosol.net.ssl.AbstractKeyStoreLoader;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -42,9 +39,7 @@ public class SecretsKeyStoreLoader
     public SecretsKeyStoreLoader(AbstractAuthenticationDetailsProvider auth, String sSecret, String sCompartmentOCID)
         {
         super(sSecret);
-        f_fetcher          = new SecretsFetcher(auth);
-        f_sSecret          = sSecret;
-        f_sCompartmentOCID = sCompartmentOCID;
+        f_fetcher = new FixedSecretsFetcher(auth, sSecret, sCompartmentOCID);
         }
 
     // ----- AbstractPrivateKeyLoader methods -------------------------------
@@ -53,7 +48,7 @@ public class SecretsKeyStoreLoader
     protected InputStream getInputStream() throws IOException
         {
         Logger.finest("Loading keystore from " + this);
-        return f_fetcher.getSecret(f_sSecret, f_sCompartmentOCID);
+        return f_fetcher.getSecret();
         }
 
     // ----- Object methods -------------------------------------------------
@@ -61,29 +56,13 @@ public class SecretsKeyStoreLoader
     @Override
     public String toString()
         {
-        if (f_sCompartmentOCID == null)
-            {
-            return "OCISecretKeyStore(" + f_sSecret + "}";
-            }
-        return "OCISecretKeyStore(" +
-                "secret='" + f_sSecret + '\'' +
-                ", compartment='" + f_sCompartmentOCID + "'}";
+        return f_fetcher.getDescription("OCISecretKeyStore");
         }
 
     // ----- data members ---------------------------------------------------
 
     /**
-     * The Secret Service client.
+     * The secret fetcher.
      */
-    private final SecretsFetcher f_fetcher;
-
-    /**
-     * A secret OCID or name.
-     */
-    private final String f_sSecret;
-
-    /**
-     * An optional OCI compartment OCID if the secret is a name instead of an OCID.
-     */
-    private final String f_sCompartmentOCID;
+    private final FixedSecretsFetcher f_fetcher;
     }

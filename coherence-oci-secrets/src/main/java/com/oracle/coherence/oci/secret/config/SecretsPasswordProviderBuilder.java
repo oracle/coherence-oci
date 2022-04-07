@@ -9,23 +9,10 @@ package com.oracle.coherence.oci.secret.config;
 
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 
-import com.oracle.bmc.secrets.SecretsClient;
-
-import com.oracle.bmc.vault.VaultsClient;
-
-import com.oracle.coherence.oci.config.OCINamespaceHandler;
-
 import com.oracle.coherence.oci.secret.util.SecretsFetcher;
 import com.oracle.coherence.oci.secret.util.SecretsPasswordProvider;
 
-import com.tangosol.coherence.config.ParameterList;
-
 import com.tangosol.coherence.config.builder.ParameterizedBuilder;
-
-import com.tangosol.config.annotation.Injectable;
-
-import com.tangosol.config.expression.Expression;
-import com.tangosol.config.expression.ParameterResolver;
 
 import com.tangosol.net.PasswordProvider;
 
@@ -36,64 +23,19 @@ import com.tangosol.net.PasswordProvider;
  * @author Jonathan Knight  2022.01.25
  */
 public class SecretsPasswordProviderBuilder
-        extends BaseSecretsBuilder<PasswordProvider>
+        extends AbstractSecretsBuilder<PasswordProvider>
     {
     // ----- ParameterizedBuilder methods -----------------------------------
 
     @Override
-    public PasswordProvider realize(ParameterResolver resolver, ClassLoader loader, ParameterList parameterList)
+    protected PasswordProvider realize(AbstractAuthenticationDetailsProvider auth, String sSecret, String sCompartmentId)
         {
-        String sSecretId      = getSecretId().evaluate(resolver);
-        String sCompartmentId = getCompartmentId().evaluate(resolver);
-
-        if (sSecretId != null && !sSecretId.isEmpty())
+        if (sSecret != null && !sSecret.isEmpty())
             {
-            AbstractAuthenticationDetailsProvider auth = realizeAuthentication(resolver, loader, parameterList);
+            SecretsFetcher fetcher = new SecretsFetcher(auth);
 
-            SecretsClient secretsClient = realizeSecretsClient(resolver, loader, parameterList);
-            VaultsClient  vaultsClient  = realizeVaultsClient(resolver, loader, parameterList);
-
-            SecretsFetcher fetcher = new SecretsFetcher(auth, secretsClient, vaultsClient);
-
-            return new SecretsPasswordProvider(fetcher, sSecretId, sCompartmentId);
+            return new SecretsPasswordProvider(fetcher, sSecret, sCompartmentId);
             }
-
         return PasswordProvider.NullImplementation;
-        }
-
-    // ----- BaseSecretsBuilder methods -------------------------------------
-
-    @Override
-    @Injectable(OCINamespaceHandler.ELEMENT_AUTHENTICATION)
-    public void setAuthentication(ParameterizedBuilder<AbstractAuthenticationDetailsProvider> builder)
-        {
-        super.setAuthentication(builder);
-        }
-
-    @Override
-    @Injectable(SecretsNamespaceHandlerExtension.ELEMENT_SECRETS_CLIENT)
-    public void setSecretsClientBuilder(ParameterizedBuilder<SecretsClient> builder)
-        {
-        super.setSecretsClientBuilder(builder);
-        }
-
-    @Override
-    @Injectable(SecretsNamespaceHandlerExtension.ELEMENT_SECRET_ID)
-    public void setSecretId(Expression<String> sId)
-        {
-        super.setSecretId(sId);
-        }
-
-    @Injectable(SecretsNamespaceHandlerExtension.ELEMENT_SECRET_NAME)
-    public void setSecretName(Expression<String> sName)
-        {
-        super.setSecretName(sName);
-        }
-
-    @Override
-    @Injectable(OCINamespaceHandler.ELEMENT_COMPARTMENT)
-    public void setCompartmentId(Expression<String> sId)
-        {
-        super.setCompartmentId(sId);
         }
     }
