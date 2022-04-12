@@ -1,0 +1,196 @@
+///////////////////////////////////////////////////////////////////////////////
+    Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+    Licensed under the Universal Permissive License v 1.0 as shown at
+    http://oss.oracle.com/licenses/upl.
+///////////////////////////////////////////////////////////////////////////////
+= Custom Authentication
+
+// DO NOT remove this header - it might look like a duplicate of the header above, but
+// both they serve a purpose, and the docs will look wrong if it is removed.
+== Custom Authentication
+
+The Coherence OCI integrations require connections to various OCI services.
+As such, they require configuring with the correct configuration file and authentications.
+Out of the box, Coherence OCI integrations use the default OCI configuration mechanism, as described in the <<docs/about/02_getting_started.adoc,Getting Started>> guide.
+
+It is possible to override the default behaviour and provide a custom configured OCI `com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider` as shown in the
+https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/javasdkgettingstarted.htm[OCI Java API Getting Started] guide.
+This allows the Coherence OCI integrations to use any custom configuration required by a specific application.
+
+=== Configure a Global Coherence OCI Authentication
+
+Taking the code from the
+https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/javasdkgettingstarted.htm[OCI Java API Getting Started] guide,
+an `AuthenticationDetailsProvider` instance can be created like this:
+
+[source,java]
+.AuthenticationFactory.java
+----
+package com.oracle.coherence.oci.example;
+
+import com.oracle.bmc.auth.AuthenticationDetailsProvider;
+import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
+import com.oracle.bmc.auth.SimplePrivateKeySupplier;
+
+import java.io.InputStream;
+import java.util.function.Supplier;
+
+public class AuthenticationFactory
+    {
+    public static AuthenticationDetailsProvider createAuthentication()
+        {
+        Supplier<InputStream> privateKeySupplier
+            = new SimplePrivateKeySupplier("~/.oci/oci_api_key.pem");
+
+        return SimpleAuthenticationDetailsProvider.builder()
+                .tenantId("myTenantId")
+                .userId("myUserId")
+                .fingerprint("myFingerprint")
+                .privateKeySupplier(privateKeySupplier::get)
+                .build();
+        }
+    }
+----
+
+The Coherence OCI integrations can then be configured to use the `AuthenticationFactory`.
+
+
+All the Coherence OCI integrations will look for a custom cluster resource defined in the Coherence operational configuration file, with the id `oci-authentication`. If this resource is present, it will be used to provide an `AbstractAuthenticationDetailsProvider` instead of the OCI defaults.
+
+For example, the `com.oracle.coherence.oci.example.AuthenticationFactory` above can be added to the `<cluster-config>` resources section in the operational configuration file as shown below:
+
+[source,xml]
+.tangosol-coherence-override.xml
+----
+<?xml version="1.0"?>
+<coherence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://xmlns.oracle.com/coherence/coherence-operational-config"
+           xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-operational-config
+              coherence-operational-config.xsd">
+
+  <cluster-config>
+    <resources>
+      <resource id="oci-authentication">
+        <class-factory-name>com.oracle.coherence.oci.example.AuthenticationFactory</class-factory-name>
+        <method-name>createAuthentication</method-name>
+      </resource>
+    </resources>
+  </cluster-config>
+</coherence>
+----
+
+With the above configuration, whenever any of the Coherence OCI integrations requires a `AbstractAuthenticationDetailsProvider` instance, it will call the `AuthenticationFactory.createAuthentication()` method.
+
+==== Parameterizing the Configuration
+
+In the `AuthenticationFactory` above, a number of values used to create the `AuthenticationDetailsProvider` were hard coded in the `createAuthentication()` method. This is fine for an example, but not very flexible for real life use. Typically, configuration values would be obtained from System properties or environment variables in the `createAuthentication()` method, but alternatively they can be passed in from the configuration.
+
+The `AuthenticationFactory` class could be changed to parameterize the private key location, tenant id, user id and fingerprint, as shown below.
+
+[source,java]
+.AuthenticationFactory.java
+----
+package com.oracle.coherence.oci.example;
+
+import com.oracle.bmc.auth.AuthenticationDetailsProvider;
+import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
+import com.oracle.bmc.auth.SimplePrivateKeySupplier;
+
+import java.io.InputStream;
+import java.util.function.Supplier;
+
+public class AuthenticationFactory
+    {
+    public static AuthenticationDetailsProvider createAuthentication(String pem,
+            String tenantId, String userId, String fingerprint)
+        {
+        Supplier<InputStream> privateKeySupplier
+            = new SimplePrivateKeySupplier(pem);
+
+        return SimpleAuthenticationDetailsProvider.builder()
+                .tenantId(tenantId)
+                .userId(userId)
+                .fingerprint(fingerprint)
+                .privateKeySupplier(privateKeySupplier::get)
+                .build();
+        }
+    }
+----
+
+The Coherence operational configuration file can then be changed to pass in the corresponding values.
+
+[source,xml]
+.tangosol-coherence-override.xml
+----
+<?xml version="1.0"?>
+<coherence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://xmlns.oracle.com/coherence/coherence-operational-config"
+           xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-operational-config
+              coherence-operational-config.xsd">
+
+  <cluster-config>
+    <resources>
+      <resource id="oci-authentication">
+        <class-factory-name>com.oracle.coherence.oci.example.AuthenticationFactory</class-factory-name>
+        <method-name>createAuthentication</method-name>
+        <init-params>
+          <init-param>
+            <param-type>string</param-type>
+            <param-value>~/.oci/oci_api_key.pem</param-value>
+          </init-param>
+          <init-param>
+            <param-type>string</param-type>
+            <param-value>myTenantId</param-value>
+          </init-param>
+          <init-param>
+            <param-type>string</param-type>
+            <param-value>myUserId</param-value>
+          </init-param>
+          <init-param>
+            <param-type>string</param-type>
+            <param-value>myFingerprint</param-value>
+          </init-param>
+        </init-params>
+      </resource>
+    </resources>
+  </cluster-config>
+</coherence>
+----
+
+=== Configure In-Line Coherence OCI Authentication
+
+Most of the Coherence OCI integrations can have a custom authentication configured in-line using the `<oci:authentication>` XML element, wherever they are added to Coherence XML configuration files.
+
+For example, a <<docs/secrets/03_password_provider.adoc,Secrets PasswordProvider>> can be configured directly with custom authentication.
+
+[source,xml]
+.tangosol-coherence-override.xml
+----
+<?xml version="1.0"?>
+<coherence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://xmlns.oracle.com/coherence/coherence-operational-config"
+           xmlns:oci="class://com.oracle.coherence.oci.config.OCINamespaceHandler"
+           xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-operational-config
+                               coherence-operational-config.xsd
+                               class://com.oracle.coherence.oci.config.OCINamespaceHandler
+                               coherence-oci.xsd">
+
+  <cluster-config>
+    <password-providers>
+      <password-provider id="secrets">
+        <oci:secrets-password-provider>
+          <oci:secret-id>ocid1.secret.oc1..abcdeaaabvmgyifakesecrettxgxkxku5zhmpu35j67hdxvxpglijz4a</oci:secret-id>
+          <oci:authentication>
+            <class-factory-name>com.oracle.coherence.oci.example.AuthenticationFactory</class-factory-name>
+            <method-name>createAuthentication</method-name>
+          </oci:authentication>
+        </oci:secrets-password-provider>
+      </password-provider>
+    </password-providers>
+  </cluster-config>
+</coherence>
+----
+
+In the example above, the password provider will obtain the password from a secret with the OCID `ocid1.secret.oc1..abcdeaaabvmgyifakesecrettxgxkxku5zhmpu35j67hdxvxpglijz4a` using the authentication obtained from the `AuthenticationFactory` class.
+

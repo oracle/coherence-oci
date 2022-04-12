@@ -45,6 +45,22 @@ public class SecretsPasswordProviderConfigTest
         }
 
     @Test
+    public void shouldConfigureProviderWithSecret()
+        {
+        ParameterizedBuilder<?> builder = getParameterizedBuilder("test-simple");
+        assertThat(builder, is(instanceOf(SecretsPasswordProviderBuilder.class)));
+        assertThat(((SecretsPasswordProviderBuilder) builder).getSecretId(), is(notNullValue()));
+        assertThat(((SecretsPasswordProviderBuilder) builder).getSecretId().evaluate(null), is(OCID_SECRET));
+        assertThat(((SecretsPasswordProviderBuilder) builder).getCompartmentId(), is(notNullValue()));
+        assertThat(((SecretsPasswordProviderBuilder) builder).getCompartmentId().evaluate(null), is(nullValue()));
+//
+//        SecretsPasswordProvider provider = (SecretsPasswordProvider) builder.realize(null, null, null);
+//        assertThat(provider, is(notNullValue()));
+//        assertThat(provider.getSecretId(), is(OCID_SECRET));
+//        assertThat(provider.getCompartmentId(), is(nullValue()));
+        }
+
+    @Test
     public void shouldConfigureProviderWithSecretNameAndCompartment()
         {
         ParameterizedBuilder<?> builder = getParameterizedBuilder("test-pass");

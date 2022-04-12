@@ -1,0 +1,74 @@
+///////////////////////////////////////////////////////////////////////////////
+    Copyright (c) 2022, Oracle and/or its affiliates.
+
+    Licensed under the Universal Permissive License v 1.0 as shown at
+    http://oss.oracle.com/licenses/upl.
+///////////////////////////////////////////////////////////////////////////////
+= Getting Started
+
+// DO NOT remove this header - it might look like a duplicate of the header above, but
+// both they serve a purpose, and the docs will look wrong if it is removed.
+== Getting Started
+
+Coherence OCI integrations use the OCI APIs to communicate with the various OCI services.
+The OCI APIs require configuration and authentication to work correctly.
+
+=== Default Configuration
+
+The default mode of operation for Coherence OCI is to use the OCI APIs default configuration mechanism,
+as described in the OCI https://docs.oracle.com/en-us/iaas/Content/API/Concepts/sdkconfig.htm[SDK and CLI Configuration]
+documentation. No other additional Coherence configuration is required if the OCI configuration file is present in the default location.
+
+==== Specify the OCI Configuration File
+
+The default location of the OCI configuration file is `~/.oci/config`
+This can be overridden by setting the `OCI_CONFIG_FILE` environment variable to point to a different configuration file.
+
+The Coherence OCI modules also allow the OCI configuration file location to be overridden using
+the `coherence.oci.config.file` system property, or `COHERENCE_OCI_CONFIG_FILE` environment variable.
+
+==== Specify the OCI Profile
+
+The https://docs.oracle.com/en-us/iaas/Content/API/Concepts/sdkconfig.htm[OCI configuration file] typically contains a
+`DEFAULT` profile, but may optionally contain other profiles. The OCI API only supports programmatically setting the profile to use. The Coherence OCI modules allows the profile to be overridden by setting the `coherence.oci.config.profile` system property, or `COHERENCE_OCI_CONFIG_PROFILE` environment variable.
+
+
+
+=== XML Configuration
+
+When adding OCI extensions to a Coherence cache configuration file or operational configuration override file, the custom OCI namespace needs to be added to the root element.
+
+In the cache configuration file, add the `xmlns:oci="class://com.oracle.coherence.oci.config.OCINamespaceHandler"` namespace declaration and add the schema location `class://com.oracle.coherence.oci.config.OCINamespaceHandler coherence-oci.xsd`
+
+[source,xml]
+.coherence-cache-config.xml
+----
+<?xml version="1.0"?>
+<cache-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns="http://xmlns.oracle.com/coherence/coherence-cache-config"
+              xmlns:oci="class://com.oracle.coherence.oci.config.OCINamespaceHandler"
+              xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-cache-config
+                                  coherence-cache-config.xsd
+                               class://com.oracle.coherence.oci.config.OCINamespaceHandler
+                               coherence-oci.xsd">
+</cache-config>
+----
+
+In the operational override configuration file, add the `xmlns:oci="class://com.oracle.coherence.oci.config.OCINamespaceHandler"` namespace declaration and add the schema location `class://com.oracle.coherence.oci.config.OCINamespaceHandler coherence-oci.xsd`
+
+[source,xml]
+.tangosol-coherence-override.xml
+----
+<?xml version="1.0"?>
+<coherence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://xmlns.oracle.com/coherence/coherence-operational-config"
+           xmlns:oci="class://com.oracle.coherence.oci.config.OCINamespaceHandler"
+           xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-operational-config
+                               coherence-operational-config.xsd
+                               class://com.oracle.coherence.oci.config.OCINamespaceHandler
+                               coherence-oci.xsd">
+
+</coherence>
+----
+
+With the additional namespace added, OCI XML extensions can be added to the configuration files by prefixing the OCI XML elements with `oci:`

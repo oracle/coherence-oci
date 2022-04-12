@@ -23,6 +23,9 @@
     </socket-providers>
 
     <password-providers>
+      <password-provider id="test-simple">
+        <oci:secrets-password-provider system-property="test.secret.ocid"/>
+      </password-provider>
       <password-provider id="test-pass">
         <oci:secrets-password-provider>
           <oci:secret-name>foo</oci:secret-name>

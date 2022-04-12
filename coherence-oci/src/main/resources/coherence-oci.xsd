@@ -108,6 +108,14 @@
     </xsd:annotation>
   </xsd:element>
 
+  <xsd:element name="compartment-id" type="coh:coherence-string-type">
+    <xsd:annotation>
+      <xsd:documentation>
+        The OCID of an OCI compartment.
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
   <!-- ============== Vault/Secret Service XSD Elements ============== -->
 
   <xsd:element name="secrets-key" type="secret-loader-type">
@@ -184,7 +192,7 @@
   <xsd:element name="secret-id" type="coh:coherence-string-type">
     <xsd:annotation>
       <xsd:documentation>
-        The identifier of a secret in the OCI Secret Service.
+        The OCID of a secret in the OCI Secret Service.
       </xsd:documentation>
     </xsd:annotation>
   </xsd:element>
@@ -206,14 +214,6 @@
     <xsd:annotation>
       <xsd:documentation>
         The name of a secret in the OCI Secret Service.
-      </xsd:documentation>
-    </xsd:annotation>
-  </xsd:element>
-
-  <xsd:element name="compartment-id" type="coh:coherence-string-type">
-    <xsd:annotation>
-      <xsd:documentation>
-        The identifier of an OCI compartment.
       </xsd:documentation>
     </xsd:annotation>
   </xsd:element>

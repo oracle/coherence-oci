@@ -86,16 +86,6 @@ public abstract class BaseSecretsBuilder<T>
         }
 
     /**
-     * Set the secret name.
-     *
-     * @param sName  the secret name
-     */
-    public void setSecretName(Expression<String> sName)
-        {
-        m_exprSecretId = sName == null ? new LiteralExpression<>(null) : sName;
-        }
-
-    /**
      * Returns the secret identifier or name.
      *
      * @return the secret identifier or name
@@ -103,6 +93,16 @@ public abstract class BaseSecretsBuilder<T>
     public Expression<String> getSecretId()
         {
         return m_exprSecretId;
+        }
+
+    /**
+     * Set the secret name.
+     *
+     * @param sName  the secret name
+     */
+    public void setSecretName(Expression<String> sName)
+        {
+        m_exprSecretId = sName == null ? new LiteralExpression<>(null) : sName;
         }
 
     /**

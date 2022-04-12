@@ -13,6 +13,7 @@ import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 
 import com.oracle.bmc.secrets.SecretsClient;
 
+import com.oracle.bmc.vault.VaultsClient;
 import com.oracle.coherence.oci.CoherenceOCI;
 
 import com.oracle.coherence.oci.config.OCINamespaceHandler;
@@ -102,6 +103,13 @@ public abstract class AbstractSecretsBuilder<T>
     public void setSecretsClientBuilder(ParameterizedBuilder<SecretsClient> builder)
         {
         super.setSecretsClientBuilder(builder);
+        }
+
+    @Override
+    @Injectable(SecretsNamespaceHandlerExtension.ELEMENT_VAULTS_CLIENT)
+    public void setVaultsClientBuilder(ParameterizedBuilder<VaultsClient> builder)
+        {
+        super.setVaultsClientBuilder(builder);
         }
 
     @Override

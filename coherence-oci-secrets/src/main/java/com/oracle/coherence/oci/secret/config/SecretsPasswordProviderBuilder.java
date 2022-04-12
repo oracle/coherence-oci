@@ -32,9 +32,7 @@ public class SecretsPasswordProviderBuilder
         {
         if (sSecret != null && !sSecret.isEmpty())
             {
-            SecretsFetcher fetcher = new SecretsFetcher(auth);
-
-            return new SecretsPasswordProvider(fetcher, sSecret, sCompartmentId);
+            return new SecretsPasswordProvider(new SecretsFetcher(auth), sSecret, sCompartmentId);
             }
         return PasswordProvider.NullImplementation;
         }

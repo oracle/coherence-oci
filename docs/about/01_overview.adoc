@@ -12,14 +12,16 @@
 // both they serve a purpose, and the docs will look wrong if it is removed.
 == Overview
 
+The Coherence OCI project provides integrations between
+https://coherence.community/[Oracle Coherence] and http://cloud.oracle.com/[Oracle Cloud Infrastructure] (OCI).
+
 [PILLARS]
 ====
 [CARD]
-.Introduction
-[icon=assistant,link=docs/about/01_introduction.adoc]
+.Getting Started
+[icon=fa-rocket,link=docs/about/02_getting_started.adoc]
 --
-Integrations with the OCI Vault and Secrets service,
-for example storing TLS keys and certs as secrets.
+Getting started with Coherence OCI.
 --
 
 ====
@@ -33,8 +35,8 @@ for example storing TLS keys and certs as secrets.
 .Vault & Secrets
 [icon=visibility_off,link=docs/secrets/01_introduction.adoc]
 --
-Integrations with the OCI Vault and Secrets service.
-For example, storing TLS keys and certs as secrets.
+Coherence integrations with the OCI Vault and Secrets service.
+For example, storing passwords, TLS keys and certificates as secrets.
 --
 
 ====

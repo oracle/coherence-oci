@@ -32,7 +32,6 @@ import com.oracle.bmc.OCID;
 import com.oracle.bmc.Region;
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
 import com.oracle.coherence.oci.CoherenceOCI;
-import com.oracle.coherence.oci.config.AuthenticationBuilder;
 import com.oracle.coherence.oci.secret.testing.CoherenceClient;
 import com.oracle.coherence.oci.secret.testing.SecretsUtils;
 import com.oracle.coherence.oci.testing.KeyTool;
