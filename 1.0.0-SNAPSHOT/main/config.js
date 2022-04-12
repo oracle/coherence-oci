@@ -39,20 +39,33 @@ function createRoutes(){
             component: loadPage('docs-about-01_overview', '/docs/about/01_overview', {})
         },
         {
-            path: '/docs/about/02_introduction',
+            path: '/docs/about/02_getting_started',
             meta: {
-                h1: 'Introduction',
-                title: 'Introduction',
+                h1: 'Getting Started',
+                title: 'Getting Started',
                 h1Prefix: null,
                 description: null,
                 keywords: null,
                 customLayout: null,
                 hasNav: true
             },
-            component: loadPage('docs-about-02_introduction', '/docs/about/02_introduction', {})
+            component: loadPage('docs-about-02_getting_started', '/docs/about/02_getting_started', {})
         },
         {
-            path: '/docs/secrets/02_introduction',
+            path: '/docs/about/03_authentication',
+            meta: {
+                h1: 'Custom Authentication',
+                title: 'Custom Authentication',
+                h1Prefix: null,
+                description: null,
+                keywords: null,
+                customLayout: null,
+                hasNav: true
+            },
+            component: loadPage('docs-about-03_authentication', '/docs/about/03_authentication', {})
+        },
+        {
+            path: '/docs/secrets/01_introduction',
             meta: {
                 h1: 'Introduction',
                 title: 'Introduction',
@@ -62,7 +75,59 @@ function createRoutes(){
                 customLayout: null,
                 hasNav: true
             },
-            component: loadPage('docs-secrets-02_introduction', '/docs/secrets/02_introduction', {})
+            component: loadPage('docs-secrets-01_introduction', '/docs/secrets/01_introduction', {})
+        },
+        {
+            path: '/docs/secrets/02_ssl',
+            meta: {
+                h1: 'Store SSL Keys & Certs in Secrets',
+                title: 'Store SSL Keys & Certs in Secrets',
+                h1Prefix: null,
+                description: null,
+                keywords: null,
+                customLayout: null,
+                hasNav: true
+            },
+            component: loadPage('docs-secrets-02_ssl', '/docs/secrets/02_ssl', {})
+        },
+        {
+            path: '/docs/secrets/03_password_provider',
+            meta: {
+                h1: 'Store Passwords in Secrets',
+                title: 'Store Passwords in Secrets',
+                h1Prefix: null,
+                description: null,
+                keywords: null,
+                customLayout: null,
+                hasNav: true
+            },
+            component: loadPage('docs-secrets-03_password_provider', '/docs/secrets/03_password_provider', {})
+        },
+        {
+            path: '/docs/secrets/04_secrets_client',
+            meta: {
+                h1: 'Custom Secrets Client',
+                title: 'Custom Secrets Client',
+                h1Prefix: null,
+                description: null,
+                keywords: null,
+                customLayout: null,
+                hasNav: true
+            },
+            component: loadPage('docs-secrets-04_secrets_client', '/docs/secrets/04_secrets_client', {})
+        },
+        {
+            path: '/docs/secrets/05_vault_client',
+            meta: {
+                h1: 'Custom Vault Client',
+                title: 'Custom Vault Client',
+                h1Prefix: null,
+                description: null,
+                keywords: null,
+                customLayout: null,
+                hasNav: true
+            },
+            component: loadPage('docs-secrets-05_vault_client', '/docs/secrets/05_vault_client', {})
         },
         {
             path: '/README',
@@ -76,19 +141,6 @@ function createRoutes(){
                 hasNav: false
             },
             component: loadPage('README', '/README', {})
-        },
-        {
-            path: '/coherence-oci-secrets/README',
-            meta: {
-                h1: 'OCI Secrets Service Integration',
-                title: 'OCI Secrets Service Integration',
-                h1Prefix: null,
-                description: null,
-                keywords: null,
-                customLayout: null,
-                hasNav: false
-            },
-            component: loadPage('coherence-oci-secrets-README', '/coherence-oci-secrets/README', {})
         },
         {
             path: '/', redirect: '/docs/about/01_overview'
@@ -113,7 +165,8 @@ function createNav(){
                             group: '/docs/about',
                             items: [
                                 { href: '/docs/about/01_overview', title: 'Overview' },
-                                { href: '/docs/about/02_introduction', title: 'Introduction' }
+                                { href: '/docs/about/02_getting_started', title: 'Getting Started' },
+                                { href: '/docs/about/03_authentication', title: 'Custom Authentication' }
                             ]
                         },
                         {
@@ -121,7 +174,11 @@ function createNav(){
                             action: 'visibility_off',
                             group: '/docs/secrets',
                             items: [
-                                { href: '/docs/secrets/02_introduction', title: 'Introduction' }
+                                { href: '/docs/secrets/01_introduction', title: 'Introduction' },
+                                { href: '/docs/secrets/02_ssl', title: 'Store SSL Keys & Certs in Secrets' },
+                                { href: '/docs/secrets/03_password_provider', title: 'Store Passwords in Secrets' },
+                                { href: '/docs/secrets/04_secrets_client', title: 'Custom Secrets Client' },
+                                { href: '/docs/secrets/05_vault_client', title: 'Custom Vault Client' }
                             ]
                         }
                     ]
