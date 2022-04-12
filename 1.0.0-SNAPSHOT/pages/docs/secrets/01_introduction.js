@@ -57,5 +57,43 @@ implementation "com.oracle.coherence:coherence-oci-secrets:${coherence.oci.versi
 replacing <code>${coherence.oci.version}</code> with the version of the Coherence OCI module you are using.</p>
 
 </div>
+
+<h3 id="_using_snapshot_builds">Using Snapshot Builds</h3>
+<div class="section">
+<p>The Coherence OCI Integrations publishes builds of the latest code to the Sonatype Maven snapshots repository.
+To use Coherence OCI snapshot versions the Sonatype snapshot repository should be added to the application.</p>
+
+<p>For example, to use version 1.0.0-SNAPSHOT of Coherence OCI and 22.06-SNAPSHOT of Coherence CE:</p>
+
+<markup
+lang="xml"
+title="pom.xml"
+>  &lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.oracle.coherence.ce&lt;/groupId&gt;
+        &lt;artifactId&gt;coherence&lt;/artifactId&gt;
+        &lt;version&gt;22.06-SNAPSHOT&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.oracle.coherence&lt;/groupId&gt;
+        &lt;artifactId&gt;coherence-oci-secrets&lt;/artifactId&gt;
+        &lt;version&gt;1.0.0-SNAPSHOT&lt;/version&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+
+  &lt;repositories&gt;
+    &lt;repository&gt;
+      &lt;id&gt;snapshots-repo&lt;/id&gt;
+      &lt;url&gt;https://oss.sonatype.org/content/repositories/snapshots&lt;/url&gt;
+      &lt;releases&gt;
+        &lt;enabled&gt;false&lt;/enabled&gt;
+      &lt;/releases&gt;
+      &lt;snapshots&gt;
+        &lt;enabled&gt;true&lt;/enabled&gt;
+      &lt;/snapshots&gt;
+    &lt;/repository&gt;
+  &lt;/repositories&gt;</markup>
+
+</div>
 </div>
 </doc-view>
