@@ -31,8 +31,6 @@ jobs:
       with:
         fetch-depth: 0
 
-#   This step will free up disc space on the runner by removing
-#   lots of things that we do not need.
     - name: disc
       shell: bash
       run: |
@@ -40,22 +38,24 @@ jobs:
         dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
         df -h
         echo "Removing large packages"
-        sudo apt-get remove -y '^dotnet-.*'
-        sudo apt-get remove -y '^llvm-.*'
-        sudo apt-get remove -y 'monodoc-http'
-        sudo apt-get remove -y 'php.*'
-        sudo apt-get remove -y azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell mono-devel
-        sudo apt-get autoremove -y
+        sudo apt-get remove -y '^dotnet-.*' || true
+        sudo apt-get remove -y '^llvm-.*' || true
+        sudo apt-get remove -y 'monodoc-http' || true
+        sudo apt-get remove -y 'php.*' || true
+        sudo apt-get remove -y azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell mono-devel || true
+        sudo apt-get autoremove -y || true
         sudo apt-get clean
         df -h
         echo "Removing large directories"
         rm -rf /usr/share/dotnet/
+        sudo rm -rf /usr/local/lib/android
         df -h
 
     - name: Set up JDK
-      uses: actions/setup-java@v1
+      uses: oracle-actions/setup-java@v1
       with:
-        java-version: '11'
+        website: oracle.com
+        release: 21
 
     - name: Cache Maven packages
       uses: actions/cache@v1
