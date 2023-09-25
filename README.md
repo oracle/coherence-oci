@@ -1,10 +1,11 @@
-///////////////////////////////////////////////////////////////////////////////
-    Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+<!--
+  Copyright (c) 2000, 2023, Oracle and/or its affiliates.
 
-    Licensed under the Universal Permissive License v 1.0 as shown at
-    http://oss.oracle.com/licenses/upl.
-///////////////////////////////////////////////////////////////////////////////
-= Coherence Integrations with Oracle Cloud Infrastructure (OCI)
+  Licensed under the Universal Permissive License v 1.0 as shown at
+  https://oss.oracle.com/licenses/upl.
+-->
+
+# Oracle Coherence OCI Integrations
 
 image:https://oracle.github.io/coherence/assets/images/logo-red.png[Coherence CE]
 
@@ -14,27 +15,34 @@ image:https://img.shields.io/github/v/release/oracle/coherence-oci?sort=semver[G
 This repository contains modules that integrate https://coherence.community/index.html[Oracle Coherence]
 with https://www.oracle.com/cloud/[Oracle Cloud Infrastructure]
 
-== Prerequisites
+## Prerequisites
 
-=== Coherence
+### Coherence
 The Coherence OCI modules require Coherence version 22.06 or later to run.
 
-=== Java
+### Java
 The Coherence OCI modules are compiled to Java 11 byte code so require Java 11, or later, to run.
 
 
-== Available Integrations
+## Available Integrations
 
-=== OCI Secrets Service
+### OCI Secrets Service
 
 Use the OCI Secrets Service to store keys and certificates used to secure Coherence clusters with TLS.
-The keys and certificates are retrieved directly from the secrets service without requiring Java keystores on the Coherence process's file system.
+The keys and certificates are retrieved directly from the secrets service without requiring Java key stores on the Coherence process's file system.
 
 See: The OCI Secrets module link:coherence-oci-secrets/README.adoc[README] file
 
-== Binary Distribution
-
-[NOTE]
-====
+## Binary Distribution
+     
 Developers choosing to distribute a binary implementation of this project are responsible for obtaining and providing all required licenses and copyright notices for the third-party code used in order to ensure compliance with their respective open source licenses.
-====
+
+
+## <a name="contrib"></a>Contribute
+
+Interested in contributing?  See our contribution [guidelines](CONTRIBUTING.md) for details.
+
+## Security
+
+Please consult the [security guide](./SECURITY.md) for our responsible security vulnerability disclosure process
+
