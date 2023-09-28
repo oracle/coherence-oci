@@ -26,41 +26,6 @@
             "title": "Custom Authentication"
         },
         {
-            "location": "/README",
-            "text": " This repository contains modules that integrate Oracle Coherence with Oracle Cloud Infrastructure ",
-            "title": "preambule"
-        },
-        {
-            "location": "/README",
-            "text": " The Coherence OCI modules require Coherence version 22.06 or later to run. ",
-            "title": "Coherence"
-        },
-        {
-            "location": "/README",
-            "text": " The Coherence OCI modules are compiled to Java 11 byte code so require Java 11, or later, to run. ",
-            "title": "Java"
-        },
-        {
-            "location": "/README",
-            "text": " Coherence The Coherence OCI modules require Coherence version 22.06 or later to run. Java The Coherence OCI modules are compiled to Java 11 byte code so require Java 11, or later, to run. ",
-            "title": "Prerequisites"
-        },
-        {
-            "location": "/README",
-            "text": " Use the OCI Secrets Service to store keys and certificates used to secure Coherence clusters with TLS. The keys and certificates are retrieved directly from the secrets service without requiring Java keystores on the Coherence process&#8217;s file system. See: The OCI Secrets module README file ",
-            "title": "OCI Secrets Service"
-        },
-        {
-            "location": "/README",
-            "text": " OCI Secrets Service Use the OCI Secrets Service to store keys and certificates used to secure Coherence clusters with TLS. The keys and certificates are retrieved directly from the secrets service without requiring Java keystores on the Coherence process&#8217;s file system. See: The OCI Secrets module README file ",
-            "title": "Available Integrations"
-        },
-        {
-            "location": "/README",
-            "text": " Note Developers choosing to distribute a binary implementation of this project are responsible for obtaining and providing all required licenses and copyright notices for the third-party code used in order to ensure compliance with their respective open source licenses. ",
-            "title": "Binary Distribution"
-        },
-        {
             "location": "/docs/secrets/03_password_provider",
             "text": " Some Coherence configuration elements allow passwords to be specified using a custom PasswordProvider , for example when providing TLS key credentials. The Coherence OCI secrets service integrations provide a custom PasswordProvider that obtains a password from a secret. The Coherence OCI XML configuration extensions provide a secrets-password-provider element to configure the secret password provider. The Coherence OCI custom XML namespace must be added to the Coherence operational configuration file or cache configuration file that the password provider is being configured in, as described in the Getting Started guide. With the OCI namespace added, a secret password provider can be used anywhere the Coherence XML uses a &lt;password-provider&gt; element, by adding the &lt;oci:secrets-password-provider&gt; element as a child of the &lt;password-provider&gt; element. In the example below, the password will come from a secret with the OCID ocid1.compartment.oc1..abcdeaaabvmgyifakecompartmentxgxkxku5zhmpu35j67hdxvxpglijz4a . <markup lang=\"xml\" >&lt;password-provider id=\"secret-password\"&gt; &lt;oci:secrets-password-provider&gt; ocid1.secret.oc1..abcdeaaabvmgyifakesecrettxgxkxku5zhmpu35j67hdxvxpglijz4a &lt;/oci:secrets-password-provider&gt; &lt;/password-provider&gt; Alternatively, instead of specifying the OCID of the secret, a combination of a secret name and a Compartment OCID can be used. In the example below the password will be read from the secret named foo in the compartment with the OCID ocid1.compartment.oc1..abcdeaaabvmgyifakecompartmentxgxkxku5zhmpu35j67hdxvxpglijz4a . <markup lang=\"xml\" >&lt;password-provider id=\"secret-password\"&gt; &lt;oci:secrets-password-provider&gt; &lt;oci:secret-name&gt;foo&lt;/oci:secret-name&gt; &lt;oci:compartment-id&gt; ocid1.compartment.oc1..abcdeaaabvmgyifakecompartmentxgxkxku5zhmpu35j67hdxvxpglijz4a &lt;/oci:compartment-id&gt; &lt;/oci:secrets-password-provider&gt; &lt;/password-provider&gt; A password provider can be added to the Coherence operational configuration file, as shown below: <markup lang=\"xml\" title=\"tangosol-coherence-override.xml\" >&lt;?xml version=\"1.0\"?&gt; &lt;coherence xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://xmlns.oracle.com/coherence/coherence-operational-config\" xmlns:oci=\"class://com.oracle.coherence.oci.config.OCINamespaceHandler\" xsi:schemaLocation=\"http://xmlns.oracle.com/coherence/coherence-operational-config coherence-operational-config.xsd class://com.oracle.coherence.oci.config.OCINamespaceHandler coherence-oci.xsd\"&gt; &lt;cluster-config&gt; &lt;password-providers&gt; &lt;password-provider id=\"secret-one\"&gt; &lt;oci:secrets-password-provider&gt; ocid1.secret.oc1..abcdeaaabvmgyifakesecrettxgxkxku5zhmpu35j67hdxvxpglijz4a &lt;/oci:secrets-password-provider&gt; &lt;/password-provider&gt; &lt;password-provider id=\"secret-two\"&gt; &lt;oci:secrets-password-provider&gt; &lt;oci:secret-name&gt;my-secret&lt;/oci:secret-name&gt; &lt;oci:compartment-id&gt; ocid1.compartment.oc1..abcdeaaabvmgyifakecompartmenttxgxkxku5zhmpu35j67hdxvxpglijz4a &lt;/oci:compartment-id&gt; &lt;/oci:secrets-password-provider&gt; &lt;/password-provider&gt; &lt;/password-providers&gt; &lt;/cluster-config&gt; &lt;/coherence&gt; The secret-one password provider will retrieve the password from the secret with the OCID ocid1.secret.oc1..abcdeaaabvmgyifakesecrettxgxkxku5zhmpu35j67hdxvxpglijz4a The secret-two password provider will retrieve the password from the secret named my-secret in the OCI compartment with the OCID ocid1.compartment.oc1..abcdeaaabvmgyifakecompartmenttxgxkxku5zhmpu35j67hdxvxpglijz4a . ",
             "title": "Store Passwords in Secrets"

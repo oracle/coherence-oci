@@ -130,19 +130,6 @@ function createRoutes(){
             component: loadPage('docs-secrets-05_vault_client', '/docs/secrets/05_vault_client', {})
         },
         {
-            path: '/README',
-            meta: {
-                h1: 'Coherence Integrations with Oracle Cloud Infrastructure (OCI)',
-                title: 'Coherence Integrations with Oracle Cloud Infrastructure (OCI)',
-                h1Prefix: null,
-                description: null,
-                keywords: null,
-                customLayout: null,
-                hasNav: false
-            },
-            component: loadPage('README', '/README', {})
-        },
-        {
             path: '/', redirect: '/docs/about/01_overview'
         },
         {
