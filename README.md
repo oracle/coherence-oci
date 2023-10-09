@@ -14,6 +14,11 @@ image:https://img.shields.io/github/v/release/oracle/coherence-oci?sort=semver[G
 
 This repository contains modules that integrate https://coherence.community/index.html[Oracle Coherence]
 with https://www.oracle.com/cloud/[Oracle Cloud Infrastructure]
+   
+## Getting Started
+
+The Coherence OCI integrations are published as a set of jar dependencies that you use in your Coherence application.
+There is nothing to install, you use the modules just as you would any other Java dependencies.
 
 ## Prerequisites
 
@@ -38,11 +43,17 @@ See: The OCI Secrets module link:coherence-oci-secrets/README.adoc[README] file
 Developers choosing to distribute a binary implementation of this project are responsible for obtaining and providing all required licenses and copyright notices for the third-party code used in order to ensure compliance with their respective open source licenses.
 
 
-## <a name="contrib"></a>Contribute
+## Contributing
 
-Interested in contributing?  See our contribution [guidelines](CONTRIBUTING.md) for details.
+This project welcomes contributions from the community. Before submitting a pull request, please [review our contribution guide](./CONTRIBUTING.md)
 
 ## Security
 
 Please consult the [security guide](./SECURITY.md) for our responsible security vulnerability disclosure process
 
+## License
+
+Copyright (c) 2023 Oracle and/or its affiliates.
+
+Released under the Universal Permissive License v1.0 as shown at
+<https://oss.oracle.com/licenses/upl/>.
