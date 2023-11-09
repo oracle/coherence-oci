@@ -79,12 +79,11 @@
 
     <!-- library dependency versions (alphabetically) -->
     <version.lib.asciidoctorj-pdf>2.3.9</version.lib.asciidoctorj-pdf>
-    <version.lib.bedrock>5.1.6</version.lib.bedrock>
-    <version.lib.coherence>22.06.5</version.lib.coherence>
+    <version.lib.coherence>22.06.6</version.lib.coherence>
     <version.lib.hamcrest>2.2</version.lib.hamcrest>
     <version.lib.junit>5.10.0</version.lib.junit>
     <version.lib.mockito>4.11.0</version.lib.mockito>
-    <version.lib.oci>3.25.1</version.lib.oci>
+    <version.lib.oci>3.28.0</version.lib.oci>
     <version.lib.slf4j>2.0.9</version.lib.slf4j>
 
     <!-- plugin dependency versions -->
@@ -177,21 +176,6 @@
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
         <version>${version.lib.mockito}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.oracle.bedrock</groupId>
-        <artifactId>bedrock-runtime</artifactId>
-        <version>${version.lib.bedrock}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.oracle.bedrock</groupId>
-        <artifactId>bedrock-testing-support</artifactId>
-        <version>${version.lib.bedrock}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.oracle.bedrock.coherence</groupId>
-        <artifactId>coherence-21.06-testing-support</artifactId>
-        <version>${version.lib.bedrock}</version>
       </dependency>
 
       <dependency>
