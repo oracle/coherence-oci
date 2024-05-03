@@ -83,8 +83,9 @@
     <version.lib.hamcrest>2.2</version.lib.hamcrest>
     <version.lib.junit>5.10.0</version.lib.junit>
     <version.lib.mockito>4.11.0</version.lib.mockito>
-    <version.lib.oci>3.28.0</version.lib.oci>
+    <version.lib.oci>3.41.0</version.lib.oci>
     <version.lib.slf4j>2.0.9</version.lib.slf4j>
+    <version.lib.jackson>2.16.2</version.lib.jackson>
 
     <!-- plugin dependency versions -->
     <version.plugin.asciidoctorj>2.5.10</version.plugin.asciidoctorj>
@@ -183,6 +184,29 @@
         <artifactId>slf4j-simple</artifactId>
         <version>${version.lib.slf4j}</version>
       </dependency>
+
+      <!-- force this version of dependency -->
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${version.lib.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${version.lib.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${version.lib.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jsr310</artifactId>
+        <version>${version.lib.jackson}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
