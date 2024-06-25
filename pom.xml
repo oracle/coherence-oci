@@ -83,7 +83,7 @@
     <version.lib.hamcrest>2.2</version.lib.hamcrest>
     <version.lib.junit>5.10.0</version.lib.junit>
     <version.lib.mockito>4.11.0</version.lib.mockito>
-    <version.lib.oci>3.41.0</version.lib.oci>
+    <version.lib.oci>3.43.2</version.lib.oci>
     <version.lib.slf4j>2.0.9</version.lib.slf4j>
     <version.lib.jackson>2.16.2</version.lib.jackson>
 
