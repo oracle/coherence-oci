@@ -7,14 +7,11 @@
 
 # Oracle Coherence OCI Integrations
 
-image:https://oracle.github.io/coherence/assets/images/logo-red.png[Coherence CE]
+<img src=https://oracle.github.io/coherence/assets/images/logo-red.png><img>
 
-image:https://img.shields.io/github/workflow/status/oracle/coherence-oci/Coherence%20OCI%20CI[GitHub CI Status]
-image:https://img.shields.io/github/v/release/oracle/coherence-oci?sort=semver[GitHub release (latest SemVer)]
+This repository contains modules that integrate [Oracle Coherence](https://coherence.community/index.html)
+with [Oracle Cloud Infrastructure](https://www.oracle.com/cloud/).
 
-This repository contains modules that integrate https://coherence.community/index.html[Oracle Coherence]
-with https://www.oracle.com/cloud/[Oracle Cloud Infrastructure]
-   
 ## Getting Started
 
 The Coherence OCI integrations are published as a set of jar dependencies that you use in your Coherence application.
