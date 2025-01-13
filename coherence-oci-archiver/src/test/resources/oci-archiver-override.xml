@@ -1,0 +1,48 @@
+<?xml version='1.0'?>
+<!--
+  ~ Copyright (c) 2025, Oracle and/or its affiliates.
+  ~
+  ~ Licensed under the Universal Permissive License v 1.0 as shown at
+  ~ https://oss.oracle.com/licenses/upl.
+  -->
+ <!--
+    Sample override with archiver definition using profile.
+ -->
+<coherence  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://xmlns.oracle.com/coherence/coherence-operational-config"
+            xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-operational-config coherence-operational-config.xsd"
+            xml-override="../common/tangosol-coherence-override.xml">
+
+  <cluster-config>
+    <snapshot-archivers>
+      <custom-archiver id="oci-snapshot-archiver">
+        <class-name>com.oracle.coherence.oci.archiver.ObjectStorageSnapshotArchiver</class-name>
+        <init-params>
+          <init-param>
+            <param-value>{cluster-name}</param-value>
+          </init-param>
+          <init-param>
+            <param-value>{service-name}</param-value>
+          </init-param>
+          <init-param>
+            <param-type>string</param-type>
+            <param-value system-property="oci.archiver.bucket">archiver-test-bucket</param-value>
+          </init-param>
+          <init-param>
+            <param-type>string</param-type>
+            <param-value system-property="oci.archiver.prefix">test-prefix</param-value>
+          </init-param>
+          <init-param>
+            <param-type>string</param-type>
+            <param-value system-property="oci.archiver.profile">OBJECT_STORAGE</param-value>
+          </init-param>
+        </init-params>
+      </custom-archiver>
+    </snapshot-archivers>
+  </cluster-config>
+
+  <management-config>
+    <managed-nodes system-property="coherence.management">all</managed-nodes>
+  </management-config>
+
+</coherence>
