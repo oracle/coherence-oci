@@ -531,7 +531,7 @@ public class ObjectStorageSnapshotArchiver
                 catch (ExecutionException e)
                     {
                     CacheFactory.log(ensureMessage(sTaskDescription + " failed " + e.getCause()), CacheFactory.LOG_WARN);
-                  }
+                    }
                 catch (InterruptedException e)
                     {
                     Thread.currentThread().interrupt();
@@ -566,6 +566,7 @@ public class ObjectStorageSnapshotArchiver
             }
         catch (InterruptedException e)
             {
+            Thread.currentThread().interrupt();
             CacheFactory.log("ObjectStorageSnapshotArchiver: Unable to submit archiver tasks " + e.getMessage(), CacheFactory.LOG_WARN);
             throw CachePersistenceHelper.ensurePersistenceException(e);
             }

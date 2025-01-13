@@ -93,6 +93,7 @@ class ArchiveOperation
             }
         catch (InterruptedException ie)
             {
+            Thread.currentThread().interrupt();
             f_archiver.registerArchiveFailed();
             throw CachePersistenceHelper.ensurePersistenceException(ie);
             }
