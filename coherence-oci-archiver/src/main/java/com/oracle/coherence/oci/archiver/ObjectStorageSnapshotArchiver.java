@@ -567,6 +567,7 @@ public class ObjectStorageSnapshotArchiver
         catch (InterruptedException e)
             {
             CacheFactory.log("ObjectStorageSnapshotArchiver: Unable to submit archiver tasks " + e.getMessage(), CacheFactory.LOG_WARN);
+            throw CachePersistenceHelper.ensurePersistenceException(e);
             }
         }
 

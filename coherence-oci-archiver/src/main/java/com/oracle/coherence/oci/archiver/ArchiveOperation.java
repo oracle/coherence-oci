@@ -91,6 +91,11 @@ class ArchiveOperation
             GuardSupport.heartbeat();
             f_archiver.registerArchive(Base.getSafeTimeMillis() - ldtStart);
             }
+        catch (InterruptedException ie)
+            {
+            f_archiver.registerArchiveFailed();
+            throw CachePersistenceHelper.ensurePersistenceException(ie);
+            }
         catch (Exception e)
             {
             f_archiver.registerArchiveFailed();

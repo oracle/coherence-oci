@@ -27,7 +27,7 @@ jobs:
 #   Checkout the source, we need a depth of zero to fetch all the history otherwise
 #   the copyright check cannot work out the date of the files from Git.
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
@@ -51,14 +51,14 @@ jobs:
         sudo rm -rf /usr/local/lib/android
         df -h
 
-    - name: Set up JDK
-      uses: oracle-actions/setup-java@v1
+    - name: Set up JDK 21 for Build
+      uses: actions/setup-java@v4
       with:
-        website: oracle.com
-        release: 21
+        java-version: '21'
+        distribution: 'zulu'
 
     - name: Cache Maven packages
-      uses: actions/cache@v1
+      uses: actions/cache@v4
       with:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
@@ -75,7 +75,7 @@ jobs:
 
     # Upload build artifacts for diagnosing failures
     - name: Build Artifacts test logs
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: test-output
@@ -83,7 +83,7 @@ jobs:
 
       # Upload test reports failures
     - name: Build Artifacts test reports
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: test-reports
