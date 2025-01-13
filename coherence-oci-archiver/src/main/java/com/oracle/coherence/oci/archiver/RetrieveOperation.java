@@ -7,14 +7,19 @@
 
 package com.oracle.coherence.oci.archiver;
 
-import java.io.InputStream;
 import com.oracle.coherence.persistence.PersistenceManager;
+
 import com.tangosol.io.ReadBuffer;
+
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.GuardSupport;
+
 import com.tangosol.persistence.CachePersistenceHelper;
 import com.tangosol.persistence.GUIDHelper;
+
 import com.tangosol.util.Base;
+
+import java.io.InputStream;
 
 /**
  * Implementation of an {@link AbstractOperation} to retrieve a store for the given snapshot.
