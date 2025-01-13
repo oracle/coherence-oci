@@ -27,7 +27,7 @@ public abstract class AbstractOperation
      * @param mgr       {@link PersistenceManager} that is managed the snapshot
      * @param sSnapshot snapshot being operated on
      */
-    public AbstractOperation(ObjectStorageSnapshotArchiver archiver, PersistenceManager<ReadBuffer> mgr, String sSnapshot)
+    protected AbstractOperation(ObjectStorageSnapshotArchiver archiver, PersistenceManager<ReadBuffer> mgr, String sSnapshot)
         {
         f_archiver = archiver;
         f_mgr = mgr;

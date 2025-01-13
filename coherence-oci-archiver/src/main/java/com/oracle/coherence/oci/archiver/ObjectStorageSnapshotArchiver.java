@@ -251,7 +251,7 @@ public class ObjectStorageSnapshotArchiver
     @Override
     public long getArchiverThreadCount()
         {
-        return f_nArchiverThreads;
+        return ARCHIVER_THREADS;
         }
 
     @Override
@@ -465,12 +465,12 @@ public class ObjectStorageSnapshotArchiver
         m_sFulLPrefix = ensureDirectoryName(FileHelper.toFilename(f_sPrefix) + SEP + FileHelper.toFilename(f_sClusterName) + SEP +
                                             FileHelper.toFilename(f_sServiceName));
         
-        CacheFactory.log("ObjectStorageSnapshotArchiver: Archiver threads: " + f_nArchiverThreads, CacheFactory.LOG_INFO);
-        m_executor = Executors.newFixedThreadPool(f_nArchiverThreads);
-        m_executorWriter = Executors.newFixedThreadPool(f_nArchiverThreads);
+        CacheFactory.log("ObjectStorageSnapshotArchiver: Archiver threads: " + ARCHIVER_THREADS, CacheFactory.LOG_INFO);
+        m_executor = Executors.newFixedThreadPool(ARCHIVER_THREADS);
+        m_executorWriter = Executors.newFixedThreadPool(ARCHIVER_THREADS);
 
         // register MBean Async
-        if (f_fMBeanEnabled)
+        if (MBEAN_ENABLED)
             {
             m_executor.submit(this::registerMBean);
             }
@@ -542,7 +542,8 @@ public class ObjectStorageSnapshotArchiver
             long nTotalDuration = System.currentTimeMillis() - ltdStart;
             if (nSuccessCount == nFutureCount)
                 {
-                CacheFactory.log(ensureMessage(String.format("%d '%s' tasks succeeded, archiver threads: %d", nSuccessCount, sTaskDescription, f_nArchiverThreads)), CacheFactory.LOG_INFO);
+                CacheFactory.log(ensureMessage(String.format("%d '%s' tasks succeeded, archiver threads: %d", nSuccessCount, sTaskDescription,
+                        ARCHIVER_THREADS)), CacheFactory.LOG_INFO);
                 CacheFactory.log(ensureMessage(String.format("overall duration: %,dms", nTotalDuration)), CacheFactory.LOG_INFO);
 
                 if (DELETE_SNAPSHOT.equals(sTaskDescription))
@@ -692,12 +693,12 @@ public class ObjectStorageSnapshotArchiver
     /**
      * The number of threads in the {@link ExecutorService} to be used to perform operations.
      */
-    private static final int     f_nArchiverThreads = Config.getInteger("coherence.distributed.persistence.oci.archiver.threads", 4);
+    private static final int ARCHIVER_THREADS = Config.getInteger("coherence.distributed.persistence.oci.archiver.threads", 4);
 
     /**
      * Indicates if MBean is enabled.
      */
-    private static final boolean f_fMBeanEnabled    = Config.getBoolean("coherence.distributed.persistence.oci.archiver.mbean.enabled", true);
+    private static final boolean MBEAN_ENABLED = Config.getBoolean("coherence.distributed.persistence.oci.archiver.mbean.enabled", true);
 
     /**
      * Archive snapshot operations.
