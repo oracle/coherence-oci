@@ -80,7 +80,7 @@
 
     <!-- library dependency versions (alphabetically) -->
     <version.lib.asciidoctorj-pdf>2.3.9</version.lib.asciidoctorj-pdf>
-    <version.lib.coherence>22.06.10</version.lib.coherence>
+    <version.lib.coherence>22.06.12</version.lib.coherence>
     <version.lib.hamcrest>2.2</version.lib.hamcrest>
     <version.lib.junit>5.10.0</version.lib.junit>
     <version.lib.mockito>4.11.0</version.lib.mockito>
