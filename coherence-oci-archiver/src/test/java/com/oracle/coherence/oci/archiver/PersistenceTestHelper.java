@@ -265,6 +265,7 @@ public class PersistenceTestHelper
                 }
             catch (InterruptedException e)
                 {
+                // ignore
                 }
 
             if (--nCounter <= 0)
