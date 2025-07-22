@@ -72,10 +72,10 @@ public class ObjectStorageSnapshotArchiver
             init();
 
             CacheFactory.log(String.format("ObjectStorageSnapshotArchiver{profile=%s, bucket=%s, prefix=%s, fullPrefix=%s}", sOciProfile, f_sBucket, f_sPrefix,
-                    m_sFulLPrefix), CacheFactory.LOG_INFO);
+                    m_sFullPrefix), CacheFactory.LOG_INFO);
 
             f_manager = new ObjectStorageManager(sOciProfile, f_sBucket);
-            ensureDirectory(m_sFulLPrefix);
+            ensureDirectory(m_sFullPrefix);
             }
         catch (Exception e)
             {
@@ -112,10 +112,10 @@ public class ObjectStorageSnapshotArchiver
             String sPrivateKeyPath = System.getenv("OCI_ARCHIVER_PRIVATE_KEY_PATH");
 
             CacheFactory.log(String.format("ObjectStorageSnapshotArchiver{from env, tenancyOCID=%s, region=%s, userOCID=%s, fingerPrint=**, privateKey=**, bucket=%s, prefix=%s, fullPrefix=%s}",
-                    sTenancyOCID, sRegion, sUserOCID, f_sBucket, f_sPrefix, m_sFulLPrefix), CacheFactory.LOG_INFO);
+                    sTenancyOCID, sRegion, sUserOCID, f_sBucket, f_sPrefix, m_sFullPrefix), CacheFactory.LOG_INFO);
 
             f_manager = new ObjectStorageManager(f_sBucket, sTenancyOCID, sRegion, sUserOCID, sFingerPrint, sPrivateKeyPath);
-            ensureDirectory(m_sFulLPrefix);
+            ensureDirectory(m_sFullPrefix);
             }
         catch (Exception e)
             {
@@ -130,7 +130,7 @@ public class ObjectStorageSnapshotArchiver
         {
         try
             {
-           return stripSpecialFiles(f_manager.listDirectory(m_sFulLPrefix, true));
+           return stripSpecialFiles(f_manager.listDirectory(m_sFullPrefix, true));
             }
         catch (ObjectStorageManagerException e)
             {
@@ -144,7 +144,7 @@ public class ObjectStorageSnapshotArchiver
         String sSnapshot = snapshot.getName();
         CacheFactory.log(ensureMessage("Archiving snapshot " + sSnapshot), CacheFactory.LOG_INFO);
 
-        ensureDirectory(m_sFulLPrefix);
+        ensureDirectory(m_sFullPrefix);
 
         recordStartTime();
         List<Callable<Void>> listTasks = new ArrayList<>();
@@ -163,7 +163,7 @@ public class ObjectStorageSnapshotArchiver
         String sSnapshot = snapshot.getName();
         CacheFactory.log(ensureMessage("Retrieving snapshot " + sSnapshot));
 
-        ensureDirectory(m_sFulLPrefix);
+        ensureDirectory(m_sFullPrefix);
 
         recordStartTime();
         List<Callable<Void>> listTasks = new ArrayList<>();
@@ -179,7 +179,7 @@ public class ObjectStorageSnapshotArchiver
     @Override
     protected boolean removeInternal(String sSnapshot)
         {
-        String sSnapshotDir  = getSnapshotDirectory(m_sFulLPrefix, sSnapshot);
+        String sSnapshotDir  = getSnapshotDirectory(m_sFullPrefix, sSnapshot);
         CacheFactory.log(ensureMessage("Removing snapshot " + sSnapshotDir), CacheFactory.LOG_INFO);
 
         // we get the list of stores and then delete them in parallel as it is quicker
@@ -205,7 +205,7 @@ public class ObjectStorageSnapshotArchiver
     @Override
     protected String[] listStoresInternal(String sSnapshot)
         {
-        String sSnapshotDir = getSnapshotDirectory(m_sFulLPrefix, sSnapshot);
+        String sSnapshotDir = getSnapshotDirectory(m_sFullPrefix, sSnapshot);
 
         try
             {
@@ -470,7 +470,7 @@ public class ObjectStorageSnapshotArchiver
             throw new IllegalArgumentException("Prefix must not start with '" + SEP + "'");
             }
 
-        m_sFulLPrefix = ensureDirectoryName(FileHelper.toFilename(f_sPrefix) + SEP + FileHelper.toFilename(f_sClusterName) + SEP +
+        m_sFullPrefix = ensureDirectoryName(FileHelper.toFilename(f_sPrefix) + SEP + FileHelper.toFilename(f_sClusterName) + SEP +
                                             FileHelper.toFilename(f_sServiceName));
         
         CacheFactory.log("ObjectStorageSnapshotArchiver: Archiver threads: " + ARCHIVER_THREADS, CacheFactory.LOG_INFO);
@@ -676,7 +676,7 @@ public class ObjectStorageSnapshotArchiver
      */
     protected String getFulLPrefix()
         {
-        return m_sFulLPrefix;
+        return m_sFullPrefix;
         }
 
     /**
@@ -743,7 +743,7 @@ public class ObjectStorageSnapshotArchiver
     /**
      * The full "directory" prefix.
      */
-    private String m_sFulLPrefix;
+    private String m_sFullPrefix;
 
     /**
      * {@link ExecutorService} to be used to perform operations.
