@@ -16,7 +16,7 @@
   <cluster-config>
     <snapshot-archivers>
       <custom-archiver id="oci-snapshot-archiver">
-        <class-name>com.oracle.coherence.oci.archiver.ObjectStorageSnapshotArchiver</class-name>
+        <class-name system-property="test.archiver.class">com.oracle.coherence.oci.archiver.ObjectStorageSnapshotArchiver</class-name>
         <init-params>
           <init-param>
             <param-value>{cluster-name}</param-value>

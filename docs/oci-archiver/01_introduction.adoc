@@ -1,0 +1,300 @@
+///////////////////////////////////////////////////////////////////////////////
+    Copyright (c) 2025, Oracle and/or its affiliates.
+
+    Licensed under the Universal Permissive License v 1.0 as shown at
+    http://oss.oracle.com/licenses/upl.
+///////////////////////////////////////////////////////////////////////////////
+= Introduction
+
+// DO NOT remove this header - it might look like a duplicate of the header above, but
+// both they serve a purpose, and the docs will look wrong if it is removed.
+== Introduction
+
+Coherence Persistence provides the ability to create snapshots of services at any time.  The snapshot operations are
+carried out in parallel, by all the members that own the partitions, and the snapshot files reside on the individual machines.
+
+Archiving provides the ability to take all those snapshot files and archive them to a central location, as a full set of partitions.
+
+Out of the box Coherence provides a directory snapshot archiver implementation which requires a shared directory between all members
+to put the snapshots.
+
+This project, provides an alternate option if you are using Oracle Cloud IInfrastructure's (OCI) Object Storage.
+
+See the https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/administer/persisting-caches.html#GUID-3B67650D-D272-4DBB-9004-0090906FC894[Coherence Documentation] for
+more information on Persistence and snapshots.
+
+
+* <<pre, Prerequisites>>
+** <<oci-access, Oracle Cloud Infrastructure (OCI) Access>>
+** <<install-oci, Install the OCI CLI>>
+** <<api-key, Create an API signing key pair>>
+** <<bucket, Create a bucket in OCI>>
+* <<coherence, Setup Coherence>>
+** <<include-library, Include the OCI snapshot archiver library>>
+** <<bucket-prefix, Determine your bucket and prefix>>
+** <<creds, Choose the method to specify your credentials in the override file>>
+*** <<profile, 1. Specify using a profile>>
+*** <<env, 2. Leave the profile out to use environment variables>>
+** <<archiver, Specify the archiver in your cache config>>
+** <<threads, Configure archiver threads>>
+** <<mebans, Enable archiver MBeans>>
+
+
+
+[#pre]
+== Prerequisites
+
+To use the Coherence OCI snapshot archiver integrations in your project there are some prerequisites required.
+
+[#oci-access]
+=== Oracle Cloud Infrastructure (OCI) Access
+
+You must have an account on Oracle Cloud Infrastructure (OCI). If you do not, you can sign up for a free tier https://www.oracle.com/au/cloud/free/[here].
+
+[#install-oci]
+=== Install the OCI CLI
+
+Follow the https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm[instructions here] to install the OCI CLI.
+
+[#api-key]
+=== Create an API signing key pair
+
+To access your OCI Object storage you need to create an API signing key pair. Instructions can be found https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm#apisigningkey_topic_How_to_Generate_an_API_Signing_Key_Console[here] but brief instructions are below:
+
+1. After logging in, view the user's details by opening the `Profile` menu and click My profile or your login name.
+2. In the `Resources` section at the bottom left, click `API Keys`
+3. Click `Add API Key` at the top left of the `API Keys` list. The Add API Key dialog displays.
+4. Download the private key and place in `~/.oci` directory and change the perms:
++
+   [source=bash]
+   ----
+   chmod go-rwx ~/.oci/<oci_api_keyfile>.pem
+   ----
+
+5. Copy the contents of the configuration file preview and add to `~/.oci/config` it should look something like the following. You should change the name from `DEFAULT` if you already have and entry with this name.
++
+   [source=bash]
+    ----
+    [DEFAULT]
+    user=ocid1.user.oc1..xxxxxxx
+    fingerprint=xx:xx:xx:xx
+    tenancy=ocid1.tenancy.oc1..xxxxxx
+    region=us-ashburn-1
+    key_file=<path to your private keyfile> # TODO
+    ----
++
+NOTE: You should add the path to your private key file.
+
+[#bucket]
+=== Create a bucket in OCI
+
+Follow the instructions (https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets_topic-To_create_a_bucket.htm[here] to create a bucket to store your archived snapshots.
+
+[#coherence]
+== Setup Coherence
+
+[#include-library]
+=== Include the OCI snapshot archiver library
+
+You need to include the `oci-archiver` project as a dependency in your project.
+
+Currently, there are no releases for this project, but you can clone the repository and build it using the following:
+
+[source=bash]
+----
+git clone https://github.com/oracle/coherence-oci.git
+cd coherence-oci
+mvn clean install -DskipTests
+----
+
+Include the following dependency in your project.
+[source=xml]
+----
+<dependency>
+  <groupId>com.oracle.coherence.oci</groupId>
+  <artifactId>coherence-oci-archiver</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+</dependency>
+----
+
+[#bucket-prefix]
+=== Determine your bucket and prefix
+
+You must choose an existing bucket name and an optional prefix for the directory structure.
+If the prefix is blank, then the directory structure it will start at `/`.
+
+NOTE: OCI Object Storages does not have the concept of directories, but they are 'simulated' by providing fully qualified paths.
+
+[#creds]
+=== Choose the method to specify Your credentials in the override file
+
+There are two options to specify the credentials for the snapshot archiver.
+
+1. Specify an OCI Profile name (from `~/.oci/config`) in the override file
+2. Use environment variables
+
+This must be configured in your operational override file and specified via `-Dcoherence.override=filename.xml`.
+
+This allows for flexibility based upon your requirements.
+
+[#profile]
+==== 1. Specify sing an OCI profile
+
+[source=xml]
+----
+<?xml version='1.0'?>
+<coherence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://xmlns.oracle.com/coherence/coherence-operational-config"
+           xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-operational-config coherence-operational-config.xsd"
+           xml-override="../common/tangosol-coherence-override.xml">
+
+  <cluster-config>
+    <snapshot-archivers>
+      <custom-archiver id="oci-snapshot-archiver">
+        <class-name>com.oracle.coherence.oci.archiver.ObjectStorageSnapshotArchiver</class-name>
+        <init-params>
+          <init-param>
+            <param-value>{cluster-name}</param-value>
+          </init-param>
+          <init-param>
+            <param-value>{service-name}</param-value>
+          </init-param>
+          <init-param>
+            <param-type>string</param-type>
+            <param-value system-property="oci.archiver.bucket">archiver-test-bucket</param-value>
+          </init-param>
+          <init-param>
+            <param-type>string</param-type>
+            <param-value system-property="oci.archiver.prefix">test-prefix</param-value>
+          </init-param>
+          <init-param>
+            <param-type>string</param-type>
+            <param-value system-property="oci.archiver.profile">OBJECT_STORAGE</param-value>
+          </init-param>
+        </init-params>
+      </custom-archiver>
+    </snapshot-archivers>
+  </cluster-config>
+</coherence>
+----
+
+NOTE: the system properties used above are examples, and you can change them to suit your needs.
+
+[#env]
+==== 2. Leave the profile out to use environment variables
+
+When you leave the profile out of the `init-params` this means the archiver will look for the required information
+in the following environment variables:
+
+* Tenancy OCID: - `OCI_ARCHIVER_TENANCY_OCID`
+* Region - `OCI_ARCHIVER_REGION`
+* User OCID - `OCI_ARCHIVER_USER_OCID`
+* Finger Print - `OCI_ARCHIVER_FINGERPRINT`
+* Private Key Path - `OCI_ARCHIVER_PRIVATE_KEY_PATH`
+
+[source=xml]
+----
+<?xml version='1.0'?>
+
+<coherence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://xmlns.oracle.com/coherence/coherence-operational-config"
+           xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-operational-config coherence-operational-config.xsd"
+           xml-override="../common/tangosol-coherence-override.xml">
+
+  <cluster-config>
+    <snapshot-archivers>
+      <custom-archiver id="oci-snapshot-archiver">
+        <class-name>
+          com.oracle.coherence.oci.archiver.ObjectStorageSnapshotArchiver
+        </class-name>
+        <init-params>
+          <init-param>
+            <param-value>{cluster-name}</param-value>
+          </init-param>
+          <init-param>
+            <param-value>{service-name}</param-value>
+          </init-param>
+          <init-param>
+            <param-type>string</param-type>
+            <param-value system-property="oci.archiver.bucket">archiver-test-bucket</param-value>
+          </init-param>
+          <init-param>
+            <param-type>string</param-type>
+            <param-value system-property="oci.archiver.prefix">test-prefix</param-value>
+          </init-param>
+        </init-params>
+      </custom-archiver>
+    </snapshot-archivers>
+  </cluster-config>
+</coherence>
+----
+
+[#archiver]
+=== Specify the archiver in your cache config
+
+Below is an example where we specify the name of the archiver to use:
+
+[source=xml]
+----
+<?xml version="1.0"?>
+<cache-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns="http://xmlns.oracle.com/coherence/coherence-cache-config"
+              xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-cache-config coherence-cache-config.xsd">
+
+  <caching-scheme-mapping>
+    <cache-mapping>
+      <cache-name>*</cache-name>
+      <scheme-name>server</scheme-name>
+    </cache-mapping>
+  </caching-scheme-mapping>
+
+  <caching-schemes>
+    <distributed-scheme>
+      <scheme-name>server</scheme-name>
+      <service-name>PartitionedCache</service-name>
+      <backing-map-scheme>
+        <transient>{transient false}</transient>
+        <local-scheme>
+          <unit-calculator>BINARY</unit-calculator>
+          <expiry-delay>0</expiry-delay>
+        </local-scheme>
+      </backing-map-scheme>
+      <persistence>
+        <environment>default-on-demand</environment>
+        <!-- <environment>default-active</environment> -->
+        <archiver>oci-snapshot-archiver</archiver>
+      </persistence>
+      <autostart>true</autostart>
+    </distributed-scheme>
+  </caching-schemes>
+</cache-config>
+----
+
+[#threads]
+=== Configure archiver threads
+
+To optimize archiver performance, you can specify the following system property on your cache servers, to start
+the required number of archiver threads per storage member.
+
+* `-Dcoherence.distributed.persistence.oci.archiver.threads=8`
+
+NOTE: The default is 4 and it is recommended to change this and test various values to determine the optimum value for your cluster.
+
+[#mebans]
+=== Monitoring archiver throughput
+
+By default, the following system property is enabled and instructs Coherence to create an archiver MBean to monitor snapshot performance.
+
+* `-Dcoherence.distributed.persistence.oci.archiver.mbean.enabled=true`
+
+You can set this to `false` to disable this MBean.
+There is one MBean per service and node named: `Coherence:type=ObjectStorageSnapshotArchiver,service=serviceName,nodeId=n`
+
+The attributes collected are shown below:
+
+[source,java]
+.SnapshotArchiverMBean.java
+----
+include::../../coherence-oci-archiver/src/main/java/com/oracle/coherence/oci/archiver/SnapshotArchiverMBean.java[]
+----
+

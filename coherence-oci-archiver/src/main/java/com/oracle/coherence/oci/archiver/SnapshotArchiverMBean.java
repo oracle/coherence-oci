@@ -10,6 +10,10 @@ package com.oracle.coherence.oci.archiver;
 import com.tangosol.net.management.annotation.Description;
 import com.tangosol.net.management.annotation.MetricsValue;
 
+
+/**
+ * Defines various attributes to record for snapshot a {@link ObjectStorageSnapshotArchiver}.
+ */
 @Description("Provides Snapshot Archiver statistics.")
 public interface SnapshotArchiverMBean {
 
