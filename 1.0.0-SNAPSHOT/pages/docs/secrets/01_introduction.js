@@ -84,7 +84,7 @@ title="pom.xml"
   &lt;repositories&gt;
     &lt;repository&gt;
       &lt;id&gt;snapshots-repo&lt;/id&gt;
-      &lt;url&gt;https://oss.sonatype.org/content/repositories/snapshots&lt;/url&gt;
+      &lt;url&gt;https://central.sonatype.com/repository/maven-snapshots&lt;/url&gt;
       &lt;releases&gt;
         &lt;enabled&gt;false&lt;/enabled&gt;
       &lt;/releases&gt;

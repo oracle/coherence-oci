@@ -64,6 +64,27 @@ For example, storing passwords, TLS keys and certificates as secrets.</p>
 </v-card-text>
 </v-card>
 </v-flex>
+<v-flex xs12 sm4 lg3>
+<v-card>
+<router-link to="/docs/oci-archiver/01_introduction"><div class="card__link-hover"/>
+</router-link>
+<v-layout align-center justify-center class="">
+<v-avatar size="150px">
+<v-icon class="xxx-large">cloud_upload</v-icon>
+</v-avatar>
+</v-layout>
+<div class="px-3">
+<v-divider class="indigo lighten-4"/>
+</div>
+<v-card-title primary class="headline layout justify-center">
+<span style="text-align:center">OCI Snapshot Archiver</span>
+</v-card-title>
+<v-card-text class="caption">
+<p></p>
+<p>Archive snapshots to OCI Object storage buckets.</p>
+</v-card-text>
+</v-card>
+</v-flex>
 </v-layout>
 </v-container>
 </v-flex>

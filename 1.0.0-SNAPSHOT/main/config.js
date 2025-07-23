@@ -130,6 +130,19 @@ function createRoutes(){
             component: loadPage('docs-secrets-05_vault_client', '/docs/secrets/05_vault_client', {})
         },
         {
+            path: '/docs/oci-archiver/01_introduction',
+            meta: {
+                h1: 'Introduction',
+                title: 'Introduction',
+                h1Prefix: null,
+                description: null,
+                keywords: null,
+                customLayout: null,
+                hasNav: false
+            },
+            component: loadPage('docs-oci-archiver-01_introduction', '/docs/oci-archiver/01_introduction', {})
+        },
+        {
             path: '/', redirect: '/docs/about/01_overview'
         },
         {
