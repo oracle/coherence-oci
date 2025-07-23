@@ -10,7 +10,7 @@ carried out in parallel, by all the members that own the partitions, and the sna
 <p>Out of the box Coherence provides a directory snapshot archiver implementation which requires a shared directory between all members
 to put the snapshots.</p>
 
-<p>This project, provides an alternate option if you are using Oracle Cloud IInfrastructure&#8217;s (OCI) Object Storage.</p>
+<p>This project, provides an alternate option if you are using Oracle Cloud Infrastructure&#8217;s (OCI) Object Storage.</p>
 
 <p>See the <a id="" title="" target="_blank" href="https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/administer/persisting-caches.html#GUID-3B67650D-D272-4DBB-9004-0090906FC894">Coherence Documentation</a> for
 more information on Persistence and snapshots.</p>
@@ -114,22 +114,22 @@ Click <code>Add API Key</code> at the top left of the <code>API Keys</code> list
 </li>
 <li>
 Download the private key and place in <code>~/.oci</code> directory and change the perms:
-<pre>[source=bash]
-----
-chmod go-rwx ~/.oci/&lt;oci_api_keyfile&gt;.pem
-----</pre>
+<div class="listing">
+<pre>chmod go-rwx ~/.oci/&lt;oci_api_keyfile&gt;.pem</pre>
+</div>
+
 </li>
 <li>
 Copy the contents of the configuration file preview and add to <code>~/.oci/config</code> it should look something like the following. You should change the name from <code>DEFAULT</code> if you already have and entry with this name.
-<pre>[source=bash]
- ----
- [DEFAULT]
- user=ocid1.user.oc1..xxxxxxx
- fingerprint=xx:xx:xx:xx
- tenancy=ocid1.tenancy.oc1..xxxxxx
- region=us-ashburn-1
- key_file=&lt;path to your private keyfile&gt; # TODO
- ----</pre>
+<div class="listing">
+<pre>[DEFAULT]
+user=ocid1.user.oc1..xxxxxxx
+fingerprint=xx:xx:xx:xx
+tenancy=ocid1.tenancy.oc1..xxxxxx
+region=us-ashburn-1
+key_file=&lt;path to your private keyfile&gt; # TODO</pre>
+</div>
+
 <div class="admonition note">
 <p class="admonition-inline">You should add the path to your private key file.</p>
 </div>
