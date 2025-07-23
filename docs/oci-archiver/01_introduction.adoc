@@ -18,11 +18,10 @@ Archiving provides the ability to take all those snapshot files and archive them
 Out of the box Coherence provides a directory snapshot archiver implementation which requires a shared directory between all members
 to put the snapshots.
 
-This project, provides an alternate option if you are using Oracle Cloud IInfrastructure's (OCI) Object Storage.
+This project, provides an alternate option if you are using Oracle Cloud Infrastructure's (OCI) Object Storage.
 
 See the https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/administer/persisting-caches.html#GUID-3B67650D-D272-4DBB-9004-0090906FC894[Coherence Documentation] for
 more information on Persistence and snapshots.
-
 
 * <<pre, Prerequisites>>
 ** <<oci-access, Oracle Cloud Infrastructure (OCI) Access>>
@@ -38,7 +37,6 @@ more information on Persistence and snapshots.
 ** <<archiver, Specify the archiver in your cache config>>
 ** <<threads, Configure archiver threads>>
 ** <<mebans, Enable archiver MBeans>>
-
 
 
 [#pre]
@@ -66,22 +64,22 @@ To access your OCI Object storage you need to create an API signing key pair. In
 3. Click `Add API Key` at the top left of the `API Keys` list. The Add API Key dialog displays.
 4. Download the private key and place in `~/.oci` directory and change the perms:
 +
-   [source=bash]
-   ----
-   chmod go-rwx ~/.oci/<oci_api_keyfile>.pem
-   ----
+[source=bash]
+----
+chmod go-rwx ~/.oci/<oci_api_keyfile>.pem
+----
 
 5. Copy the contents of the configuration file preview and add to `~/.oci/config` it should look something like the following. You should change the name from `DEFAULT` if you already have and entry with this name.
 +
-   [source=bash]
-    ----
-    [DEFAULT]
-    user=ocid1.user.oc1..xxxxxxx
-    fingerprint=xx:xx:xx:xx
-    tenancy=ocid1.tenancy.oc1..xxxxxx
-    region=us-ashburn-1
-    key_file=<path to your private keyfile> # TODO
-    ----
+[source=bash]
+----
+[DEFAULT]
+user=ocid1.user.oc1..xxxxxxx
+fingerprint=xx:xx:xx:xx
+tenancy=ocid1.tenancy.oc1..xxxxxx
+region=us-ashburn-1
+key_file=<path to your private keyfile> # TODO
+----
 +
 NOTE: You should add the path to your private key file.
 

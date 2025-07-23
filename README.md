@@ -33,7 +33,12 @@ The Coherence OCI modules are compiled to Java 11 byte code so require Java 11, 
 Use the OCI Secrets Service to store keys and certificates used to secure Coherence clusters with TLS.
 The keys and certificates are retrieved directly from the secrets service without requiring Java key stores on the Coherence process's file system.
 
-See: The OCI Secrets module link:coherence-oci-secrets/README.adoc[README] file
+See: The OCI Secrets module [README](https://oracle.github.io/coherence-oci/1.0.0-SNAPSHOT/#/docs/about/01_overview).
+
+### OCI Snapshot Archiver
+
+The [OC Archiver](https://github.com/oracle/coherence-oci/tree/main/coherence-oci-archiver) project, provides Coherence snapshot archiver 
+if you are using Oracle Cloud Infrastructure's (OCI) Object Storage.
 
 ## Binary Distribution
      
